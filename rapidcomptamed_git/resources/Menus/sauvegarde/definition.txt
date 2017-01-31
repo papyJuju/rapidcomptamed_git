@@ -1,0 +1,24 @@
+<!DOCTYPE CMenu><CMenu version="0.0" stdsetdef="1">
+<actions>
+    <action>
+        <property name="name">
+            <cstring>Sauvegarde</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>floppy.png</iconset>
+        </property>
+        <property name="text">
+            <string>Sauvegarde</string>
+        </property>
+        <property name="menuText">
+            <string>Acces &amp;sauvegarde</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+s</string>
+        </property>
+        <property name="script">
+            <string>{{:: exe_process ( ,../../sauvegarde/bin/sauvegarde)}}</string>
+        </property>
+    </action>
+</actions>
+</CMenu>

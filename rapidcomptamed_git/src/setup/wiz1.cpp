@@ -1,0 +1,25 @@
+#include <QtGui>
+#include <QtCore>
+#include "wiz1.h"
+#include "page1.h"
+
+wiz1::wiz1(){
+  m_result = false;
+  setAttribute (Qt::WA_DeleteOnClose);
+  setOption(QWizard::NoBackButtonOnStartPage,true);
+  addPage(new page1(this));
+  addPage(new page2);
+  addPage(new pageFin);
+}
+
+wiz1::~wiz1(){}
+
+void wiz1::setfalse(bool result)
+{
+    m_result = result;
+}
+
+bool wiz1::returnfalse()
+{
+    return m_result;
+}

@@ -1,0 +1,151 @@
+<html><body>
+La comptabilité rapidcomptamed est destinée à une prise rapide des recettes.
+Elle permet aussi une intégration facile des dépenses, et un contrôle de ces dépenses.
+Enfin la comptabilité peut être triée, analysée, la gestion des
+immobilisations est possible, ainsi que l'édition du Grand Livre et la
+page recettes dépenses de la 2035.
+<p><a href="#1">Installer rapidcomptamed avec MedinTux.</a></p>
+<p><a href="#2">Installer rapidcomptamed seul.</a></p>
+<p><a href="#3">Utiliser le module comptatriee.</a></p>
+<p><a href="#4">Utiliser le module recettes.</a></p>
+<p><a href="#5">Vérifier et modifier les recettes.</a></p>
+<p><a href="#6">Utiliser la CCAM.</a></p>
+<p><a href="#7">Le module Immobilisations.</a></p>
+<p><a href="#8">Les modules d'analyse.</a></p>
+<p><a href="#9">Le module dépenses.</a></p>
+<a name="1"></a><p><b>Pour installer rapidcomptamed avec medintux:</b>
+il faut placer le répertoire rapidcomptamed dans celui nommé "Programmes" de Medintux.
+Dans "bin" lancer "comptatriee", puis settings et setup.
+Ca installe des boutons dans DrTux.
+L'installation de la base de donnée de la comptabilité s'est installée sous SQLITE dans $HOME/.rapidcomptamed .
+On peut voir ce répertoire dans le dossier utilisateur sous Linux par ctrl+h. Si installe aussi le fichier config.ini.
+Si on veut installer la comptabilité sous MYSQL par exemple pour travail en réseau, il faut inscrire dans config.ini
+MYSQL à la place SQLITE.
+<p>
+<img src="../resources/pixmap/compta_param.png"/> 
+</p>
+<a name="2"></a><p><b>Pour installer rapidcomptamed seul :</b>
+lancer comptatriee, la base comptabilité sera installée avec SQLITE, et une base nommée "nameindex" de noms et prénoms 
+sera créée.
+
+<a name="3"></a><p><b>Utiliser le module comptatriee. :</b>
+ce module permet l'utilisation de toutes les ressources de la comptabilité.
+Commencez par Paramétrer la comptabilité :
+votre(vos) utilisateur(s) ainsi que l'utilisateur préférentiel par poste.
+Votre compte, votre(vos) site(s) de travail, la liste des payeurs, les pourcentages à appliquer sur les recettes , etc...
+Pour les analyses, les immobilisations, elles se font par utilisateur. Soyez attentifs à ça. 
+Si vous êtes seul, la définition de l'utilisateur préférentiel permet de ne pas se tromper.
+<a name="4"></a><p><b>Utiliser le module recettes :</b>
+Il y a 7 régions dans la fenêtre . 
+<b>La région "1"</b> est définie par le paramétrage. 
+La date est la date du jour, on peut modifier la date d'enregistrement.
+le site est celui que vous avez défini, par exemple votre cabinet médical.
+L'utilisateur utilisé est celui affiché, d'où l'intérêt de bien définir <b>votre utilisateur préférentiel</b>  qui
+apparaîtra en premier.
+De même pour le compte en banque.
+<img src="../resources/pixmap/config_compta_util.png"> 
+La payeur est en général le patient, mais ce peut être une institution dont les noms et adresse devront être paramétrés.
+C'est important pour le module de gestion et de récupération des <b>dus</b>.
+<b>La région "2"</b> est la zone de choix des valeurs à enregistrer. Il faut noter qu'un acte préférentiel,
+lui même paramétré par vos soins, est affiché sur le bouton d'enregistrement. Le choix d'une autre valeur le remplacera
+ou si ajoutera.
+Le <b>Thésaurus</b> est une base de données de vos séries d'actes préférés, que vous créerez en enregistrant vos choix 
+écrits sur le bouton d'enregistrement par le bouton "Plus Thésaurus".
+Le bouton <b>ccam</b> lance le logiciel de CCAM. Il permet le choix simple ou multiple d'actes CCAM, et a lui même son
+propre <b>thésaurus</b>. Lors de l'enregistrement des actes dans ce logiciel, la somme calculée selon la règle définie 
+au dessous est affichée dans la fenêtre et les actes sur le bouton d'enregistrement. Plus loin j'explique comment 
+nourrir la base CCAM à partir des fichiers NX.
+Plus bas, c'est la liste des actes NGAP, des forfaits complémentaires, et des indemnités kilométriques dont le prix
+unitaire est paramétrable. Il respecte la règle des abattements kilométriques.
+<b>La région "3"</b> permet de découper l'acte en pourcentage, par exemple 70 % pour la  part AMO, 30 % pour la part AMC.
+On peut modifier ou ajouter des pourcentages qui seront stockés dans la base de données.
+<b>La région "4"</b> est une région de boutons de fonctions. 
+Essayez les simplement. Le bouton thésaurus permet d'enregistrer une suite d'actes pour utilisation préférentielle.
+Le bouton "Recettes" permet de visualiser les recettes enregistrer pour les vérifier et les modifier.
+Un paragraphe traite du contrôle des recettes.
+Le bouton Error permet de voir les messages de debug et de warning du logiciel pour envoi éventuel au développeur en cas
+de bug.
+Le bouton "<b>?</b>" est une aide : en cliquant dessus la souris devient interrogative et si elle est amenée sur la 
+région qui pose question et qu'on reclique à cet endroit là, un message d'explication apparaît.
+Le bouton Paramétrages ouvre le même programme de paramétrage que celui de comptatriée.
+<b>La région "5"</b> est la région du choix du nom et du prénom du patient. Si le logiciel est lancé par MedinTux 
+après installation des boutons par le setup, l'ouverture du logiciel dans le dossier du patient inscrit directement 
+son nom et son prénom dans cette région.
+En mode indépendant il faut soit choisir un nom dans la liste, soit en créer un nouveau sous la forme :
+nom;prénom ou nom prénom séparé d'un simple espace.
+<b>La région "6"</b> est la région du choix du mode de paiement. Y apparaît aussi un choix "bloquer ouvert" si le choix 
+de "fermeture automatique" est fait.
+<b>La région "7"</b> est la région d'enregistrement des actes et sommes. C'est ce qui est inscrit sur le bouton 
+qui est enregistré.
+On peut enregistrer plusieurs soins dans une même séance. Ceci pour une comptabilité complémentaire par séances.
+<img src="../resources/pixmap/recette_image.png"> 
+<a name="5"></a><p><b>Pour vérifier et modifier les recettes :</b>
+on clique sur le bouton "recette". Une fenêtre apparaît où on peut filtrer les recettes sur plusieurs critères, et 
+on voit le résultat en cliquant sur le bouton de filtrage.
+Pour filtrer sur le nom du patient, utiliser le signe "<b>%</b>" comme joker. Par exemple pour trouver les recettes de
+Mr Machin Pierre, écrivez %machin% .
+Vous onvservez aussi un bouton de gestion des dus qui permet de lancer le <b>logiciel de "gestion des dus"</b>.
+<img src="../resources/pixmap/modif_recettes.png">
+<br/>
+<a name="6"></a><p><b>Utilisation de la CCAM :</b>
+Le bouton CCAM lance de logiciel de la CCAM. On y choisit les actes voulu, on double clique dessus, on valide le choix
+on peut placer dans le thésaurus les actes, on confirme le choix. La fenêtre se ferme à ce moment là et le tarif cumulé
+s'affiche dans la fenêtre. On enregistre.
+<b>La mise à jour</b> de la  base CCAM se fait en cliquant sur le menu idoine comme ci-dessous :
+<img src="../resources/pixmap/CCAMimport.png"> 
+<br/>
+et en cliquant sur 
+<br/>
+<img src="../resources/pixmap/cactot_cpam.png">
+<br/>
+ce qui donne (attention ça dure une heure) :
+<br/>
+<img src="../resources/pixmap/mise_a_jour_CCAM.png">
+<br/>
+Ensuite vous utiliserez la CCAM, après avoir relancé la fenêtre "Recettes".
+<br/>
+<img src="../resources/pixmap/image_choix_ccam.png">
+<br/>
+Vous trouvez le code de l'acte en tapant un mot clé dans la zone "1",
+vous double cliquez sur la zone "2" sur thésaurus pour thésauriser votre acte préférentiel, 
+<br/>
+<img src="../resources/pixmap/valid_ccam.png">
+<br/>
+Puis vous validez, enregistrez dans le thésaurus puis confirmez.
+Vous revenez dans la fenêtre "recettes". Il ne reste plus qu'à enregistrer l'acte.
+</br>
+<a name="7"></a><p><b>Le module Immobilisations</b>
+permet d'enregistrer de gros achats, qui seront déclarés aux Impôts comme "immobilisés", et donc déduits des impôts
+de façon linéaire sur x années, ou de façon dégressive selon votre choix (voir avec votre comptable ou votre AGA).
+<br/>
+<img src="../resources/pixmap/immob.png">
+</br>
+<a name="8"></a><p><b>Les modules d'analyse de la comptabilité.</b>
+Ils sont lancés dans comptatriee :
+<img src="../resources/pixmap/compta_analyses.png">
+Ils dépendent de l'utilisateur choisi.
+<a name="9"></a><p><b>Le module Dépenses .</b>
+Le module Dépenses permet d'enregistrer les dépenses professionnelles, ventilées selon la comptabilité des impôts.
+Ces dépenses sont enregistrables en pourcentage professionnels et privés. Seules seront comptabilisés 
+les parts professionnelles.
+Par exemple, une facture de gaz dans un cabinet intégré à la maison qui utilise 1/3 en professionnel sera déclarée à 33%.
+<br/>
+<img src="../resources/pixmap/image_depenses.png">
+<br/>
+Donc :
+dans la zone "1" vous choisirez le type de dépense, la somme et le détail de la dépense
+ (par exemple : salaires > 1500 euros > salaire de la secrétaire.)
+ Dans la zone "2" vous vérifiez le pourcentage professionnel à appliquer à la dépense.
+ Dans la zone "3" vous choisissez l'utilisateur concerné (votre login par exemple).
+ Dans la zone "4" vous choisissez la date de valeur.
+ Dans la zone "5" vous choisissez le mode de règlement.
+ Dans la zone "6" vous validez si vous avez reçu la facture ou non. Si vous l'avez reçue en même temps que la dépense, 
+ il faut cocher la case "facture reçue". Si vous la recevez plus tard, vous sélectionnez la dépense, puis vous validez 
+ pour indiquer que vous avez reçu la facture. Ca vous permet de vous y retrouver lors de votre déclaration des impôts.
+ Avec "Effacer" vous effacez une dépense sélectionnée.
+ Puis une fois tout rempli, vous enregistrez la dépense par le bouton "7".
+ Vous visualiserez les dépenses dans la fenêtre et vous pouvez les trier en cliquant sur les têtes de liste.
+ Ca vous permet de les retrouver plus facilement.
+ 
+</p>
+</body></html>

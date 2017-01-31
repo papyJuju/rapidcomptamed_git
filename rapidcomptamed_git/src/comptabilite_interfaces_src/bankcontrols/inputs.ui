@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>InputsWidget</class>
+ <widget class="QWidget" name="InputsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>752</width>
+    <height>604</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0" rowspan="4">
+    <widget class="QCalendarWidget" name="calendarWidget"/>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="inputsLabel">
+     <property name="text">
+      <string>Inputs</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" colspan="2">
+    <widget class="QLineEdit" name="inputsEdit">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>40</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" rowspan="3" colspan="2">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QRadioButton" name="especeButton">
+       <property name="text">
+        <string>Especes</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="checkButton">
+       <property name="text">
+        <string>Cheques</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="cbButton">
+       <property name="text">
+        <string>Carte Bleue</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="virButton">
+       <property name="text">
+        <string>Virement</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="addButton">
+     <property name="text">
+      <string>&amp;Add</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QPushButton" name="deleteButton">
+     <property name="text">
+      <string>&amp;Delete</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="userLabel">
+       <property name="text">
+        <string>Utilisateur</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="userComboBox"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="bankLabel">
+       <property name="text">
+        <string>Comptes</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="bankComboBox"/>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0" colspan="4">
+    <widget class="QTableView" name="tableView"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="resultLabel">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

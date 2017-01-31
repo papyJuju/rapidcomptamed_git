@@ -1,0 +1,31 @@
+#ifndef TEST_H
+#define TEST_H
+
+#include <QObject>
+#include <QStringList>
+#include <QSqlDatabase>
+#include <QHash>
+
+class Test:public QObject
+{
+    Q_OBJECT
+    enum DatabaseDriver {
+        Driver_SQLite = 0,
+        Driver_MySQL,
+        Driver_PostGreSQL,
+    };
+    public:
+        Test (QObject *parent = 0);
+        ~Test ();
+        bool areTheTablesPresent();
+        QStringList getMissingTablesNames();
+        bool areEveryFieldsPresent(int driver, QSqlDatabase & db,QStringList listtables,QHash<QString,QString> & hashtablesfields);
+        QHash<QString,QString>  getMissingFieldsByTable();
+        bool testVersion(QSqlDatabase & db);
+    private:
+        QStringList getlistoffieldsbyvalue(const QString & valueofhash);
+        bool changeVersionNumberInDatabase(QSqlDatabase & db);
+        QHash<QString,QString> m_hashmissingfields;
+};  
+
+#endif

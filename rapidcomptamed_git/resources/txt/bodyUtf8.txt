@@ -1,0 +1,18 @@
+﻿
+Madame, Monsieur,
+
+merci de régler la somme de [sommedus] euro,
+
+correspondant aux actes<br/> [listeactes]
+
+sur le site [site]
+
+par le docteur [praticien]
+
+Dans l'attente d'un prompt règlement, veuillez agréer mes salutations distinguées.
+
+
+[signature]
+
+
+

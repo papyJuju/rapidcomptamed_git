@@ -1,0 +1,277 @@
+#include "facturationIO.h"
+#include <common/constants.h>
+#include <QHash>
+#include <QStringList>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDate>
+#include <QDebug>
+#include <QMessageBox>
+
+using namespace Common;
+using namespace Constants;
+
+FacturationIO::FacturationIO(QObject * parent)
+{
+    m_db = QSqlDatabase::database(DB_ACCOUNTANCY);
+}
+
+FacturationIO::~FacturationIO(){}
+
+double FacturationIO::getValueFromCcamAct(const QString & act) 
+{
+    enum{VALUE_INSIDE=0,DATE_INSIDE};
+    QString actinside = act;
+    double value = 0.00;
+    QHash<QString,double> valueshash;
+    QString base;
+    QString amountcolumn;
+    QString datecolumn;
+    QString codecolumn;
+    base = getbasefromact(actinside);
+    if (base == "actes_disponibles")
+    {
+          amountcolumn = "montant_total";
+          datecolumn = "date_effet";
+          codecolumn = "nom_acte";
+        }
+    if (base == "forfaits")
+    {
+          amountcolumn = "valeur";
+          datecolumn = "date";
+          codecolumn = "forfaits";
+        }
+    if (base == "ccam")
+    {
+          amountcolumn = "amount";
+          datecolumn = "date";
+          codecolumn = "code";
+        }
+    QString req = QString("select %1,%2 from %3 where %4 = '%5'")
+                  .arg(amountcolumn,datecolumn,base,codecolumn,actinside);
+    QSqlQuery qy(m_db);
+    if (!qy.exec(req))
+    {
+          qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+        }
+    while (qy.next())
+    {
+        double v = qy.value(VALUE_INSIDE).toDouble();
+        QString d = qy.value(DATE_INSIDE).toString();
+        valueshash . insert(d,v);
+        }
+    
+    QString datestr;
+    if (valueshash.keys().size()>0)
+    {
+          datestr = valueshash.keys()[0];
+        }     
+    
+    QDate datefirst = QDate::fromString(datestr,"yyyy-MM-dd");
+    for ( int i = 0 ; i < valueshash.size() ; ++i)
+    {
+          QDate datenext = QDate::fromString(valueshash.keys()[i],"yyyy-MM-dd");
+          if (datenext >= datefirst)
+          {
+                datefirst = datenext;
+              }
+        }   
+    value = valueshash.value(datefirst.toString("yyyy-MM-dd"));
+    return value;
+}
+
+QString FacturationIO::getbasefromact(const QString & act)
+{
+    QString reqbase = ("select * from %2 where %3 = '%4'");
+    QString base;
+    QString amountcolumn;
+    QString datecolumn;
+    QString reqbaseactesdispo = reqbase.arg("actes_disponibles","nom_acte",act);
+    QString reqbaseforfaits = reqbase.arg("forfaits","forfaits",act);
+    QString reqbaseccam = reqbase.arg("ccam","code",act);
+    QHash<QString,QString> hash;
+    hash.insert(reqbaseactesdispo,"actes_disponibles");
+    hash.insert(reqbaseforfaits,"forfaits");
+    hash.insert(reqbaseccam,"ccam");
+    QStringList reqlist = hash.keys();
+    foreach(QString req,reqlist){
+        QSqlQuery qy(m_db);
+        if (!qy.exec(req))
+        {
+            qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+            }
+        while (qy.next())
+        {
+            base = hash.value(req);
+            }
+        }
+    return base;
+}
+
+void FacturationIO::setUnderlyingModels(FactureModel * model)
+{
+    
+}
+
+bool FacturationIO::record(FactureModel *model,const QString & factureid)//TODO
+{
+    QSqlTableModel modelfacturation(this,m_db);
+    modelfacturation.setTable(TABLE_FACTURATION);
+    modelfacturation.select();
+    int rowfacturation = getrowoffacturation(modelfacturation,factureid);
+    QSqlTableModel modelhonoraires(this,m_db);
+    modelfacturation.setTable(TABLE_HONORAIRES);
+    modelfacturation.select();
+    QString id_facture,list_id_hono,list_id_sites,list_id_usr,dates,patient,note,divers;
+    
+    for ( int row = 0; row < model->rowCount(); ++row)
+    {
+        for ( int col = 0; col < model->columnCount(); ++col)
+        {
+              QVariant value;
+              switch(col){
+                  case PATIENT :
+                      value = model.data(model.index(row,PATIENT),Qt::DisplayRole);
+                      if (!value.isEmpty())
+                      {
+                            patient = value;
+                          }
+                      break;
+                  case PRATICIEN :                       
+                      QString idusr = model.data(model.index(row,PRATICIEN),Qt::DisplayRole);
+                      value = insertNewUser(row,rowfacturation, idusr);
+                      list_id_usr = value;
+                      break;
+                  case DATE_OPERATION :
+                      QString dateop = model.data(model.index(row,DATE_OPERATION),Qt::DisplayRole);
+                      value = insertDate(DATE_OPERATION,row,rowfacturation,dateop);
+                      dates = value;
+                      break;
+                  case DATE_PAIEMENT :
+                      QString datepay = model.data(model.index(row,DATE_PAIEMENT),Qt::DisplayRole);
+                      value = insertDate(DATE_PAIEMENT,row,rowfacturation,datepay);
+                      dates = value;
+                      break;
+                  case DATE_VALEUR :
+                      QString dateval = model.data(model.index(row,DATE_VALEUR),Qt::DisplayRole);
+                      value = insertDate(DATE_VALEUR,row,rowfacturation,dateval);
+                      dates = value;
+                      break;
+                  case DATE_VALIDATION :
+                      QString datevalid = model.data(model.index(row,DATE_VALIDATION),Qt::DisplayRole);
+                      value = insertDate(DATE_VALIDATION,row,rowfacturation,datevalid);
+                      dates = value;
+                      break;
+                  case PRESTATION :
+                      value = model.data(model.index(row,),Qt::DisplayRole);
+                      
+                      break;
+                  case VALEUR :
+                      value = model.data(model.index(row,),Qt::DisplayRole);
+                      
+                      break;
+                  case MODE_PAIEMENT :
+                      value = model.data(model.index(row,),Qt::DisplayRole);
+                      
+                      break;
+                  case STATUT :
+                      value = model.data(model.index(row,),Qt::DisplayRole);
+                      
+                      break;
+                  default :
+                      break;    
+                  }
+              
+                  
+            }
+        }
+    return true;
+}
+
+int FacturationIO::getrowoffacturation(QSqlTableModel & modelfacturation,const QString & factureid)
+{
+    int row = 0;
+    for ( int i = 0; i < modelfacturation.rowCount(); ++i)
+    {
+        if (modelfacturation.data(modelfacturation.index(i,ID_FACTURE),Qt::DisplayRole).toString() == factureid)
+        {
+              row = i;
+            }
+        }
+    return row;
+}
+
+QStringList FacturationIO::listOfFacturesId()
+{
+    QStringList listofid;
+    QSqlTableModel modelfacturation(this,m_db);
+    modelfacturation.setTable(TABLE_FACTURATION);
+    modelfacturation.select();
+    for ( int i = 0; i < modelfacturation; ++i)
+    {
+          QString id = modelfacturation.data(modelfacturation.index(i,ID_FACTURE),Qt::DisplayRole).toString();
+          listofid << id;
+        }
+    return listofid;
+}
+
+QVariant FacturationIO::insertNewUser(int rowinbill,int rowfacturation, const QString & iduser)
+{
+    /*
+    <1>ida</1><2>idb</2> ....<rowinbill>iduser</rowinbill>
+    */
+    QString begintokenrow = QString("<%1>").arg(rowinbill);
+    QString endtokenrow = QString("</%1>").arg(rowinbill);
+    QRegExp exp = QRegExp(QString("<%1>\w+</%1>").arg(rowinbill));
+    QSqlTableModel modelfacturation(this,m_db);
+    modelfacturation.setTable(TABLE_FACTURATION);
+    modelfacturation.select();    
+    QString listuserofrow;
+    listuserofrow = modelfacturation.data(model.index(rowfacturation,LIST_ID_USR),Qt::DisplayRole).toString();
+    if (listuserofrow.contains(begintokenrow))
+    {
+          QString newstring = QString("<%1>%2</%1>").arg(rowinbill,iduser);
+          listuserofrow.replace(exp,newstring);
+        }
+    else
+    {
+        listuserofrow += QString("<%1>%2</%1>").arg(rowinbill,iduser);
+        }
+    return QVariant(listuserofrow);
+}
+
+QVariant FacturationIO::insertDate(int dateenum , int rowfacture, int rowfacturation, const QString & date)
+{
+    /*
+      <row>
+          <DATE_OPERATION>
+              dateop
+          </DATE_OPERATION>
+          <DATE_PAIEMENT>
+              datepay
+          </DATE_PAIEMENT>
+          <DATE_VALEUR>
+              datevalue
+          </DATE_VALEUR>
+          <DATE_VALIDATION>
+              datevalid
+          </DATE_VALIDATION>
+        </row>
+      */
+    QVariant result;
+    QSqlTableModel modelfacturation(this,m_db);
+    modelfacturation.setTable(TABLE_FACTURATION);
+    modelfacturation.select();
+    QString modelfacturationvalue = modelfacturation.data(modelfacturation.index(rowfacturation,DATES),Qt::DisplayRole).toString();
+    QStandardItemModel * datesmodel(0,DatesEnumMaxPAram,this);
+    datesmodel = getDatesFromBlob(modelfacturationvalue);
+    return result;
+}
+
+QStandardItemModel * FacturationIO::getDatesFromBlob(const QString & modelfacturationvalue)
+{
+    QStandardItemModel * datesmodel(0,DatesEnumMaxPAram,this);
+    
+    return datesmodel;
+}
+

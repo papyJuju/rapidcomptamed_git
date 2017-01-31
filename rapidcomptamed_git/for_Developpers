@@ -1,0 +1,13 @@
+to systems are available to send informations to the program.
+common/commandlineparser give the choice between an xml exchange file (created in xmlparser), or use command line with arguments.
+
+The arguments are founded for use in comptatriee(global accountancy widget), recettedialog(receipts) and depensedialog(expenditures),
+ the three entries for the program.
+ 
+ Info version in DatabaseManager et INFORMATIONS.csv
+
+ To compil windows release
+ install cygwin, QT
+ cd C:\rapidcomptamed
+ C:\cygwin\bin\dos2unix compil_compta_win.sh
+ C:\cygwin\bin\sh compil_compta_win.sh

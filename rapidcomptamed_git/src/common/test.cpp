@@ -1,0 +1,191 @@
+#include "test.h"
+#include "version.h"
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QDebug>
+#include <QMessageBox>
+#include <QVariant>
+
+
+using namespace Version;
+
+Test::Test(QObject * parent)
+{
+    Q_UNUSED(parent);
+}
+
+Test::~Test(){}
+
+bool Test::areTheTablesPresent()
+{
+    return true;
+}
+
+
+QStringList Test::getMissingTablesNames(){return QStringList();};
+
+bool Test::areEveryFieldsPresent(int driver, QSqlDatabase & db,QStringList listtables,QHash<QString,QString> & hashtablesfields)
+{
+    QHash<QString,QString>  hashtablesfieldsreal;
+    foreach(QString table,listtables){
+        QSqlQuery qy(db);
+        QString req;
+        switch(driver){
+            case Driver_SQLite :
+                //TODO
+                break;
+            case Driver_MySQL :
+                req = QString("show columns from %1").arg(table);
+                break;
+            case Driver_PostGreSQL :
+                
+                break;
+            default :
+                break;    
+            }
+         
+        if (!qy.exec(req))
+        {
+              qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+              return false;
+            }
+        while (qy.next())
+        {
+            hashtablesfieldsreal.insertMulti(table,qy.value(0).toString());
+            }
+        }//foreach
+    QStringList listoftables;
+    listoftables = hashtablesfields.keys();
+    foreach(QString table,listoftables){
+        QString value = hashtablesfields.value(table);
+        QStringList listoffieldswhoshouldbepresent;
+        listoffieldswhoshouldbepresent = getlistoffieldsbyvalue(value);
+        QString realtable = table.remove("Table").trimmed();
+        QStringList listoffieldspresent;
+        listoffieldspresent = hashtablesfieldsreal.values(realtable);
+        foreach(QString fieldnottrimmed,listoffieldswhoshouldbepresent){
+            QString field = fieldnottrimmed.trimmed();
+            if (!listoffieldspresent.contains(field))
+            {
+                  m_hashmissingfields.insertMulti(table,field);
+                }
+            }
+        }
+    if (m_hashmissingfields.count()>0)
+    {
+          return false;
+        }
+    return true;
+}
+
+QHash<QString,QString> Test::getMissingFieldsByTable()
+{return m_hashmissingfields;}
+
+/*name_sql.insert("Table forfaits",
+                    "CREATE TABLE IF NOT EXISTS	forfaits ("
+                    "id_forfaits  int(10)       UNSIGNED NOT NULL auto_increment,"
+                    "forfaits 	    varchar(50)   COLLATE utf8_unicode_ci NOT NULL,"
+                    "desc_acte      varchar(200)  COLLATE utf8_unicode_ci NULL,"
+                    "valeur 	    varchar(10)   COLLATE utf8_unicode_ci NOT NULL,"
+                    "date date NULL,"
+                    "divers_info    blob NULL,"
+                    "type           varchar(10)  COLLATE utf8_unicode_ci NOT NULL,"
+                    "PRIMARY KEY(id_forfaits));");*/
+QStringList Test::getlistoffieldsbyvalue(const QString & valueofhash)
+{
+    QString value = valueofhash;
+    QStringList listresult;
+    QStringList list;
+    QString primary = "PRIMARY";
+    if (value.contains("primary")&&!value.contains("PRIMARY"))
+    {
+          primary = "primary";
+        }
+    QString exists = "EXISTS";
+    if (value.contains("exists")&& !value.contains("EXISTS"))
+    {
+          exists = "exists";
+        }
+    if (value.contains(primary))
+    {
+          list = value.split(primary);
+          value = list[0];
+        }
+    list = value.split(exists);
+    value = list[1];
+    list = value.split("(");
+    list.removeAt(0);
+    value = list.join("(");
+    list = value.split(",");
+    foreach(QString line,list){
+        line = line.trimmed();
+        if (line.isEmpty())
+        {
+              continue;
+            }
+        QStringList linelist;
+        linelist = line.split(" ");
+        if (linelist.size()>0)
+        {
+              listresult << linelist[0];
+            }
+        }
+    return listresult;
+}
+
+bool Test::testVersion(QSqlDatabase & db)
+{
+    QString readVersion;
+    QSqlQuery qVersion(db);
+    const QString reqVersion = QString("SELECT %1 FROM %2").arg("version","informations");
+    if (!qVersion.exec(reqVersion))
+    {
+    	  qWarning() << __FILE__ << QString::number(__LINE__) << qVersion.lastError().text() ;
+        }
+    while (qVersion.next())
+    {
+    	readVersion = qVersion.value(0).toString();
+        }
+    qWarning() << __FILE__ << QString::number(__LINE__) << "version database = "+readVersion ;
+    qWarning() << __FILE__ << QString::number(__LINE__) << "version code = " << QString(VERSIONNUMBER);
+    if (readVersion != QString(VERSIONNUMBER))
+    {
+           QMessageBox msgBox;
+           msgBox.setText(tr("Votre version de logiciel a changé."));
+           msgBox.setInformativeText(tr("Voulez vous mettre à jour la base ?"));
+           msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+           msgBox.setDefaultButton(QMessageBox::Ok);
+           int ret = msgBox.exec();
+           switch(ret){
+               case QMessageBox::Ok :
+                   if (!changeVersionNumberInDatabase(db))
+                   {
+                         QMessageBox::warning(0,tr("Warning"),
+                         tr("Impossible de mettre à jour le numéro de version dans la base."),QMessageBox::Ok);
+                         }
+                   return false;
+                   break;
+               case QMessageBox::Cancel :
+                   return false;
+                   break;
+               default :
+                   break;
+               }
+        }
+     return true;
+}
+
+bool Test::changeVersionNumberInDatabase(QSqlDatabase & db)
+{
+    QSqlQuery qNewVersion(db);
+    const QString reqNewVersion = QString("INSERT INTO %1 (%2) VALUES('%3')").arg("informations",
+                                                                                  "version",
+                                                                                  QString(VERSIONNUMBER));
+    if (!qNewVersion.exec(reqNewVersion))
+    {
+        qWarning() << __FILE__ << QString::number(__LINE__) << "unable to insert new version number" ;
+    	return false;
+    	}
+    return true;
+}
+

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SauveDialog</class>
+ <widget class="QWidget" name="SauveDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>580</width>
+    <height>497</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>11</pointsize>
+    <weight>75</weight>
+    <bold>true</bold>
+    <underline>false</underline>
+    <strikeout>false</strikeout>
+    <kerning>false</kerning>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Sauvegarde Medintux</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="warningLabel">
+     <property name="text">
+      <string>warning</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QTextBrowser" name="textBrowser">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>61</height>
+      </size>
+     </property>
+     <property name="html">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:11pt; font-weight:600; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;Ce logiciel  permet la sauvegarde automatique de vos bases de données MedinTux.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;Vous pouvez choisir les bases à sauvegarder et le rythme de sauvegarde automatique.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;Ces fichiers sont sauvegardés dans les répertoires :&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;- medintux sauve pour DrTuxTest, comptabilité, ou les deux,&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;- medintuxsauvetout si vous choisissez de &amp;quot;tout&amp;quot; sauvegarder.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;Leur titre est du type fichier-date-heure.sql.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;Le chemin de sauvegarde est :&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;- pour windows la lettre de votre périphérique (que vous obtenez par Poste de Travail ,&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;- pour Linux le périphérique dans /media.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;Le chemin du logiciel de sauvegarde mysqldump est :&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;- dans windows dans EasyPHP ou Wamp selon votre installation (découverte automatique),&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400;&quot;&gt;- pour Linux c'est /usr/bin/mysqldump en général.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <layout class="QGridLayout">
+     <item row="0" column="2">
+      <widget class="QComboBox" name="comboBox"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Comic Sans MS</family>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Chemin de sauvegarde</string>
+       </property>
+       <property name="buddy">
+        <cstring>comboBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="minimumSize">
+        <size>
+         <width>161</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Comic Sans MS</family>
+        </font>
+       </property>
+       <property name="text">
+        <string>Base(s) à sauvegarder</string>
+       </property>
+       <property name="buddy">
+        <cstring>basesComboBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="QComboBox" name="basesComboBox">
+       <property name="minimumSize">
+        <size>
+         <width>181</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="minimumSize">
+        <size>
+         <width>131</width>
+         <height>21</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Comic Sans MS</family>
+        </font>
+       </property>
+       <property name="text">
+        <string>Chemin de mysqldump</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="font">
+        <font>
+         <family>Comic Sans MS</family>
+        </font>
+       </property>
+       <property name="text">
+        <string>Rythme de sauvegarde
+ automatique</string>
+       </property>
+       <property name="buddy">
+        <cstring>rythmComboBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="QComboBox" name="rythmComboBox"/>
+     </item>
+     <item row="1" column="2">
+      <widget class="QPushButton" name="savingPathButton">
+       <property name="text">
+        <string>Choisir le chemin de sauvegarde</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QPushButton" name="mysqldumpButton">
+       <property name="text">
+        <string>Choisir la localisation de mysqldump</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="QLineEdit" name="partitionPathEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QVBoxLayout">
+     <item>
+      <widget class="QPushButton" name="saveButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>111</width>
+         <height>91</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>&amp;Sauvegarder</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="quitButton">
+       <property name="text">
+        <string>&amp;Fermer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="restoreButton">
+       <property name="text">
+        <string>&amp;Restaurer</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="1">
+    <widget class="QFrame" name="frame">
+     <property name="minimumSize">
+      <size>
+       <width>411</width>
+       <height>161</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="resultLabel">
+        <property name="minimumSize">
+         <size>
+          <width>450</width>
+          <height>131</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>comboBox</tabstop>
+  <tabstop>basesComboBox</tabstop>
+  <tabstop>saveButton</tabstop>
+  <tabstop>quitButton</tabstop>
+  <tabstop>rythmComboBox</tabstop>
+  <tabstop>textBrowser</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

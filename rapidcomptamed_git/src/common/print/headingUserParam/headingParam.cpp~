@@ -1,0 +1,178 @@
+/***************************************************************************
+ *   Copyright (C) 2009 by Docteur Pierre-Marie Desombre.   *
+ *   pm.desombre@medsyn.fr  *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 3 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+#include "headingParam.h"
+#include <common/icore.h>
+#include <common/settings.h>
+#include <common/commandlineparser.h>
+#include <common/constants.h>
+
+using namespace Common;
+using namespace Constants;
+static inline Common::CommandLine *dataIn(){ return Common::ICore::instance()->commandLine();}//pointer on commandLineParser
+static inline QString resourcesPath() {return Common::ICore::instance()->settings()->applicationResourcesPath();}
+static inline Common::Settings *settings(){return Common::ICore::instance()->settings();}
+
+headingParam::headingParam(QWidget * parent){
+  setupUi(this);
+  QPoint parentPosition = parent->parentWidget()->pos();
+  QPoint plusPoint(50,50);
+  move(parentPosition+plusPoint);
+  m_headingText = "";
+  m_headingFile = "";
+  //codec
+  m_codec = settings()->value(CODEC).toString();
+  //----appel des bases----------------------
+  m_accountancyDb = QSqlDatabase::database(Constants::DB_ACCOUNTANCY);//comptabilite
+  setAttribute(Qt::WA_DeleteOnClose);
+  //--------usersComboBox of Users
+  usersComboBox->setEditable(true);
+  usersComboBox->setInsertPolicy(QComboBox::NoInsert);
+  usersComboBox->addItems(fillUserComboBox());
+  //---------------------------------
+  //--------usersComboBox of types of headings--------------
+  QStringList headingsTypeList;
+              headingsTypeList << trUtf8("Entête")
+                               << trUtf8("Pied de page");
+
+  headingsComboBox->setEditable(true);
+  headingsComboBox->setInsertPolicy(QComboBox::NoInsert);
+  headingsComboBox->addItems(headingsTypeList);
+  //----- files of headings-----------------------------
+  QDir dirTxt(resourcesPath()+"/txt");
+  m_listTxt = dirTxt.entryList();
+  
+  //------heading text-----------------------------------
+  comboBoxHeadingChanged(headingsComboBox->currentIndex());
+  
+  QTextDocument *document = new QTextDocument;
+  document->setPlainText(m_headingText);
+  textEdit->setDocument(document);
+  textEdit->show();
+
+  connect(quitButton,SIGNAL(pressed()),this,SLOT(close()));
+  connect(recordButton,SIGNAL(pressed()),this,SLOT(modifyText()));
+  connect(usersComboBox,SIGNAL(activated(int)),this,SLOT(comboBoxUserChanged(int)));
+  connect(headingsComboBox,SIGNAL(activated(int)),this,SLOT(comboBoxHeadingChanged(int)));
+}
+
+headingParam::~headingParam(){}
+
+QStringList headingParam::fillUserComboBox(){
+  QString prefUser = Common::ICore::instance()->settings()->value(S_UTILISATEUR_CHOISI).toString();
+  int id = Common::ICore::instance()->settings()->value(S_ID_UTILISATEUR_CHOISI).toInt();
+  QStringList listeLogin;
+
+  listeLogin << prefUser;
+
+  QSqlQuery query2(m_accountancyDb);
+            query2.exec("SELECT login FROM utilisateurs");
+  while(query2.next()){
+      QString login = query2.value(0).toString();
+      listeLogin << login;
+      }
+  listeLogin.removeDuplicates();
+  if(listeLogin.size() < 1){
+      listeLogin << trUtf8("Docteur générique");
+      }
+  return listeLogin;
+}
+
+void headingParam::modifyText(){
+  QString userLogin = usersComboBox->currentText();
+  int headingChoice = headingsComboBox->currentIndex();
+  QString typeOfText = typeOfHeading(headingChoice);
+  QString texte;
+  texte = textEdit->toPlainText();
+  qDebug() << __FILE__ << QString::number(__LINE__) << " file = " << resourcesPath()+"/txt/"+userLogin+"_"+typeOfText;
+  QFile file(resourcesPath()+"/txt/"+userLogin+"_"+typeOfText+".txt");
+  if(!file.open(QIODevice::ReadWrite|QIODevice::Truncate)){
+	qWarning() << __FILE__ << QString::number(__LINE__) << " "<< userLogin+"_"+typeOfText+trUtf8(" ne peut pas être ouvert.");
+	return;
+	}
+  QTextStream tamise(&file);
+  QByteArray codecarray = m_codec.toLatin1();
+  const char * codecchar = codecarray.data();
+  tamise.setCodec(codecchar);
+  tamise << texte;
+  file.close();
+  QMessageBox::information(0,tr("Info"),userLogin+"_"+typeOfText+".txt"+tr(" a été créé."),QMessageBox::Ok);
+}
+
+void headingParam::comboBoxHeadingChanged(int choice){
+  QString userLogin = usersComboBox->currentText();
+  QString headingChoice = headingsComboBox->currentText();
+  QString typeOfText;
+  typeOfText = typeOfHeading(choice);
+
+  QString fileUserType = userLogin+"_"+typeOfText+".txt";
+  if(!m_listTxt.contains(fileUserType)){
+      QMessageBox::information(0,trUtf8("Attention"),trUtf8("Voulez vous créer pour cet "
+                                                     "utilisateur un fichier ")+typeOfText+tr("?"),QMessageBox::Ok|QMessageBox::Cancel);
+      m_headingFile = userLogin+"_"+typeOfText+".txt";
+  }
+  else{
+      QString str;
+      foreach(str,m_listTxt){
+          QStringList l = str.split("_");
+          if(!l.isEmpty() && l[0] == userLogin){
+              if(l[1] == typeOfText+".txt"){
+                  m_headingFile = str;
+              }
+          }
+      }
+  }
+  QFile f(resourcesPath()+"/txt/"+m_headingFile);
+  if(!f.open(QIODevice::ReadWrite|QIODevice::Text)){
+      QMessageBox::warning(0,trUtf8("Erreur"),trUtf8("Fichier non ouvrable !")+QString(__FILE__)+" "+QString(__LINE__),QMessageBox::Ok);
+      }
+  
+  QTextStream streamHeading(&f);
+  QByteArray codecarray = m_codec.toLatin1();
+  const char * codecchar = codecarray.data();
+  streamHeading.setCodec(codecchar);
+  QString resultText = "";
+  while(!streamHeading.atEnd()){
+      QString line = streamHeading.readLine();
+      resultText += line+"\n";
+      }
+  
+  f.close();
+  m_headingText = resultText;
+  textEdit -> setPlainText(resultText);
+}
+
+void headingParam::comboBoxUserChanged(int choice){
+  comboBoxHeadingChanged(headingsComboBox->currentIndex());
+}
+
+QString headingParam::typeOfHeading(int choice){
+    QString typeOfText ;
+      if(choice == 0){
+      typeOfText = "headUtf8";
+  }
+  else if(choice == 1){
+      typeOfText = "footUtf8";
+  }
+  else{
+      QMessageBox::warning(0,trUtf8("Erreur"),trUtf8("Choisissez un type de texte !"),QMessageBox::Ok);
+      return QString();
+  }
+    return typeOfText;
+}

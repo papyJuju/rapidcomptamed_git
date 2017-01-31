@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ParametrageDialog</class>
+ <widget class="QWidget" name="ParametrageDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>415</width>
+    <height>512</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>190</width>
+    <height>51</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Paramétrages</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="1">
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Configurer les utilisateurs
+ de la comptabilité</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="pushButton_11">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Paramétrage des 
+entêtes et pieds de page.</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="thesaurusButton">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Modifier le Thesaurus
+personnel</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Paramétrer les sites</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="pushButton_4">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Entrer un Payeur</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="pushButton_5">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>57</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Entrer un pourcentage
+de paiement</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QPushButton" name="pushButton_6">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Entrer un Acte</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="pushButton">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Utilisateur,compte
+ et acte préférentiel</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="pushButton_7">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Automatisme de fermeture
+de Recettes</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="pushButton_8">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Compléter la base
+comptabilite</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QPushButton" name="quitButton">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>&amp;Quitter</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QPushButton" name="reinitConfigButton">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Réinitialiser le fichier
+ de configuration.</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QPushButton" name="pushButton_9">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Rapport de Bug</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QPushButton" name="configmedintuxdatasButton">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Configurer le fichier 
+de liaison avec MedinTux</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QPushButton" name="configiniButton">
+       <property name="minimumSize">
+        <size>
+         <width>190</width>
+         <height>51</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Configurer
+ rapidecomptabilite</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

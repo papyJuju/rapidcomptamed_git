@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ModifierRecette</class>
+ <widget class="QWidget" name="ModifierRecette">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>969</width>
+    <height>628</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>710</width>
+    <height>520</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Voir et modifier les recettes, gérer les dus.</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0" colspan="2">
+    <widget class="QTableView" name="tableView">
+     <property name="minimumSize">
+      <size>
+       <width>691</width>
+       <height>270</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLabel" name="sumsLabel">
+     <property name="minimumSize">
+      <size>
+       <width>680</width>
+       <height>55</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" rowspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>371</width>
+       <height>201</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Filtrer les données</string>
+     </property>
+     <widget class="QPushButton" name="searchButton">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>140</y>
+        <width>131</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>131</width>
+        <height>25</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>&amp;Rechercher
+selon le filtrage</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>130</y>
+        <width>388</width>
+        <height>58</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout">
+       <item>
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Date de début</string>
+          </property>
+          <property name="buddy">
+           <cstring>beginDateEdit</cstring>
+          </property>
+         </widget>
+         <widget class="QDateEdit" name="beginDateEdit">
+          <property name="minimumSize">
+           <size>
+            <width>100</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>76</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="displayFormat">
+           <string>dd/MM/yyyy</string>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="dateendLabel">
+           <property name="text">
+            <string>Date de fin</string>
+           </property>
+           <property name="buddy">
+            <cstring>endDateEdit</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDateEdit" name="endDateEdit">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>76</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="displayFormat">
+            <string>dd/MM/yyyy</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>12</x>
+        <y>30</y>
+        <width>591</width>
+        <height>59</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="minimumSize">
+          <size>
+           <width>70</width>
+           <height>21</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Filtrer patient</string>
+         </property>
+         <property name="buddy">
+          <cstring>lineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>110</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="usersLabel">
+         <property name="minimumSize">
+          <size>
+           <width>70</width>
+           <height>21</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Utilisateur</string>
+         </property>
+         <property name="buddy">
+          <cstring>usersComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="usersComboBox">
+         <property name="minimumSize">
+          <size>
+           <width>161</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>2000</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="sitesLabel">
+         <property name="text">
+          <string>Site</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QComboBox" name="sitesComboBox">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>211</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Actions</string>
+     </property>
+     <widget class="QWidget" name="layoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>20</y>
+        <width>271</width>
+        <height>181</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>51</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>&amp;Effacer
+la ligne</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>51</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>&amp;Quitter</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="pushButton_5">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>51</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>?</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QPushButton" name="pushButton_6">
+         <property name="text">
+          <string>Im&amp;primer</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButton">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>51</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Gérer
+les dus.</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QRadioButton" name="radioButton">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>25</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>&amp;Recettes</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="seancesRadioButton">
+       <property name="text">
+        <string>&amp;Séances</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

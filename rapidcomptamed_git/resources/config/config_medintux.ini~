@@ -1,0 +1,13 @@
+[config]
+firstime=true
+[database]
+medintux_base="DrTuxTest"
+alarmes_base="alarmes"
+host="localhost"
+login="root"
+password=""
+port="3306"
+driver="QMYSQL"
+
+[tables]
+index="IndexNomPrenom"

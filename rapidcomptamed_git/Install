@@ -1,0 +1,52 @@
+Pour installer le programme telecharger les librairies QT , sqlite et ou mysql.
+ldd donne comme dependances sous debian 2.6.32 :
+ldd ./comptatriee
+	linux-gate.so.1 =>  (0xb7712000)
+	libQt3Support.so.4 => /usr/lib/libQt3Support.so.4 (0xb7408000)
+	libQtSql.so.4 => /usr/lib/libQtSql.so.4 (0xb73c9000)
+	libQtXml.so.4 => /usr/lib/libQtXml.so.4 (0xb7383000)
+	libQtGui.so.4 => /usr/lib/libQtGui.so.4 (0xb68e0000)
+	libQtCore.so.4 => /usr/lib/libQtCore.so.4 (0xb665c000)
+	libpthread.so.0 => /lib/i686/cmov/libpthread.so.0 (0xb6643000)
+	libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0xb654e000)
+	libm.so.6 => /lib/i686/cmov/libm.so.6 (0xb6528000)
+	libgcc_s.so.1 => /lib/libgcc_s.so.1 (0xb6509000)
+	libc.so.6 => /lib/i686/cmov/libc.so.6 (0xb63c3000)
+	libQtNetwork.so.4 => /usr/lib/libQtNetwork.so.4 (0xb6297000)
+	libfontconfig.so.1 => /usr/lib/libfontconfig.so.1 (0xb6268000)
+	libaudio.so.2 => /usr/lib/libaudio.so.2 (0xb6252000)
+	libglib-2.0.so.0 => /lib/libglib-2.0.so.0 (0xb6188000)
+	libpng12.so.0 => /lib/libpng12.so.0 (0xb6164000)
+	libz.so.1 => /usr/lib/libz.so.1 (0xb6150000)
+	libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0xb60d9000)
+	libgobject-2.0.so.0 => /usr/lib/libgobject-2.0.so.0 (0xb609b000)
+	libSM.so.6 => /usr/lib/libSM.so.6 (0xb6092000)
+	libICE.so.6 => /usr/lib/libICE.so.6 (0xb607a000)
+	libXrender.so.1 => /usr/lib/libXrender.so.1 (0xb6071000)
+	libXext.so.6 => /usr/lib/libXext.so.6 (0xb6062000)
+	libX11.so.6 => /usr/lib/libX11.so.6 (0xb5f45000)
+	libdl.so.2 => /lib/i686/cmov/libdl.so.2 (0xb5f41000)
+	libgthread-2.0.so.0 => /usr/lib/libgthread-2.0.so.0 (0xb5f3b000)
+	librt.so.1 => /lib/i686/cmov/librt.so.1 (0xb5f32000)
+	/lib/ld-linux.so.2 (0xb7713000)
+	libexpat.so.1 => /usr/lib/libexpat.so.1 (0xb5f0c000)
+	libXt.so.6 => /usr/lib/libXt.so.6 (0xb5eba000)
+	libXau.so.6 => /usr/lib/libXau.so.6 (0xb5eb7000)
+	libpcre.so.3 => /lib/libpcre.so.3 (0xb5e83000)
+	libuuid.so.1 => /lib/libuuid.so.1 (0xb5e7f000)
+	libxcb.so.1 => /usr/lib/libxcb.so.1 (0xb5e66000)
+	libXdmcp.so.6 => /usr/lib/libXdmcp.so.6 (0xb5e61000)
+	
+	Donc les librairie QTGUI, QTCORE, QTSQL, QTXML, QTBETWORK, SQLITE et/ou MYSQL.
+	
+Ensuite il faut placer le repertoire rapidcomptamed dans programmes de medintux.
+Puis lancer comptatriee et dedans lancer le setup pour medintux; ça installe des boutons de lancement dans medintux.
+Sinon, le programme peut marche seul, mais on perd l'auto complétion du nom et prénom des dossiers de medintux.
+
+En cas de non fonctionnement du logiciel, on peut recompiler.
+Sous Linux, telecharger les paquets de dev de QT4.
+Se rendre dans le dossier rapidcomptamed ("cd chemin/rapidcomptamed")
+lancer Compil_comptaLin.sh . En cas d'inexecution, verifiez le droit a� l'execution 
+("chmod +x configure_linux.sh")
+
+

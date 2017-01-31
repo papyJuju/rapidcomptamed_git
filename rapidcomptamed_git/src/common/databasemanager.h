@@ -1,0 +1,105 @@
+/***************************************************************************
+ *   Copyright (C) 2009 by Eric Maeker, MD.                                *
+ *   eric.maeker@free.fr                                                   *
+ *   and completed by Pierre-Marie Desombre, GP,                           *
+ *   pm.desombre@medsyn.fr                                                 *
+ *   This code is free and open source .                                   *
+ *   It is released under the terms of the new BSD License.                *
+ *                                                                         *
+ *   Redistribution and use in source and binary forms, with or without    *
+ *   modification, are permitted provided that the following conditions    *
+ *   are met:                                                              *
+ *   - Redistributions of source code must retain the above copyright      *
+ *   notice, this list of conditions and the following disclaimer.         *
+ *   - Redistributions in binary form must reproduce the above copyright   *
+ *   notice, this list of conditions and the following disclaimer in the   *
+ *   documentation and/or other materials provided with the distribution.  *
+ *   - Neither the name of the FreeMedForms' organization nor the names of *
+ *   its contributors may be used to endorse or promote products derived   *
+ *   from this software without specific prior written permission.         *
+ *                                                                         *
+ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS   *
+ *   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT     *
+ *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS     *
+ *   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE        *
+ *   COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,  *
+ *   INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,  *
+ *   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;      *
+ *   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER      *
+ *   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT    *
+ *   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN     *
+ *   ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE       *
+ *   POSSIBILITY OF SUCH DAMAGE.                                           *
+ ***************************************************************************/
+ /***************************************************************************
+ *   Main Developper : Eric MAEKER, <eric.maeker@free.fr>                  *
+ *   Contributors :                                                        *
+ *       Docteur Pierre-Marie Desombre,pm.desombre@medsyn.fr               *
+ ***************************************************************************/
+#ifndef DATABASEMANAGER_H
+#define DATABASEMANAGER_H
+
+#include <QObject>
+#include <QSqlDatabase>
+#include <QProgressBar>
+namespace Common {
+
+class DatabaseManager : public QObject
+{
+    Q_OBJECT
+    enum UtilisateurFields 
+    {
+        UTIL_ID_USR = 0,
+        UTIL_NOM_USR,
+        UTIL_LOGIN,
+        UTIL_PASSWORD, 	
+        UTIL_ID_DRTUX_USR,
+        UTIL_SERRURE,
+        UTIL_MaxParam
+        };
+public:
+    enum DatabaseDriver {
+        Driver_SQLite = 0,
+        Driver_MySQL,
+        Driver_PostGreSQL,
+    };
+
+    DatabaseManager(QObject *parent);
+    ~DatabaseManager();
+    bool connectAccountancy();
+    bool createAccountancyDatabaseSchema(const int driver) ;
+    bool feedAccountancyDatabaseWithDefaults() const;
+    bool createAccountancyDatabase(const int driver) const;
+    bool createCcamDatabase(const int driver);
+    bool createFirstSqlConnection() const;
+    bool isAccountancyDatabaseCorrupted(const int driver,QSqlDatabase &);
+    bool isAnIndependantProgram();
+    bool parseDumpCcam();
+    bool isAccoutancyConfigNotConfigured();
+//    bool isAccountancyDatabaseValid(const int majorVersion, const int minorVersion);
+//    bool updateAccountancyDatabaseFromVersion(const int major, const int minor);
+
+    
+private:
+    bool testVersion(QSqlDatabase & db);
+    void manageSettingsForOnlyFirstTimeTrueToFalse();
+    void manageSettingsForMysql();
+    void manageSettingsForSqlite();
+    QString choiceOfDriver();
+    bool isNotLockField(QSqlDatabase & db);
+    bool miseaniveauIdmvtdispo(QSqlDatabase & db);
+    QHash<QString,QString> getDatabaseShemaHash(int driver);
+    bool manageNewDatabase(const int driver);
+    bool tableExists(const QString table,const int driver);
+    QStringList getColumnsFromTable(const QString table);
+    QStringList getColumnsFromHash(const QString table,const int driver);
+    QString columnArgs(const QString column,const QString table,const int driver);
+    void importOldBaseToRapidecomptabilite();
+    bool m_IsAccountancyConfigured;
+    const char * m_codecchar;
+    const QString m_createtable;
+};
+
+} // End namespace Common
+
+#endif   // DATABASEMANAGER_H

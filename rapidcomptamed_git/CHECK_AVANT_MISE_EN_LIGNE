@@ -1,0 +1,25 @@
+-vérifier numéro de version :
+dans le code common/version.h
+
+
+-compiler dernières sources :
+qmake-qt4 *.pro
+make clean
+make
+
+-vérifier l'absence de données dans le répertoire resources/html
+
+-vérifier nombre de tables dans config.ini et dans le code.
+
+-mettre dans le répertoire
+dans bin : comptatriee, recettedialog, depensedialog
+dans bin/FichiersNX : le dernier fichier CCAM
+resources
+src
+
+
+
+
+
+
+

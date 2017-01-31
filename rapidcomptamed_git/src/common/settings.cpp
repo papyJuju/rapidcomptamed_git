@@ -1,0 +1,253 @@
+/***************************************************************************
+ *   Copyright (C) 2009 by Eric MAEKER, MD.                                *
+ *   eric.maeker@free.fr                                                   *
+ *                                                                         *
+ *   This code is free and open source .                                   *
+ *   It is released under the terms of the new BSD License.                *
+ *                                                                         *
+ *   Redistribution and use in source and binary forms, with or without    *
+ *   modification, are permitted provided that the following conditions    *
+ *   are met:                                                              *
+ *   - Redistributions of source code must retain the above copyright      *
+ *   notice, this list of conditions and the following disclaimer.         *
+ *   - Redistributions in binary form must reproduce the above copyright   *
+ *   notice, this list of conditions and the following disclaimer in the   *
+ *   documentation and/or other materials provided with the distribution.  *
+ *   - Neither the name of the FreeMedForms' organization nor the names of *
+ *   its contributors may be used to endorse or promote products derived   *
+ *   from this software without specific prior written permission.         *
+ *                                                                         *
+ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS   *
+ *   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT     *
+ *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS     *
+ *   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE        *
+ *   COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,  *
+ *   INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,  *
+ *   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;      *
+ *   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER      *
+ *   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT    *
+ *   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN     *
+ *   ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE       *
+ *   POSSIBILITY OF SUCH DAMAGE.                                           *
+ ***************************************************************************/
+#include "settings.h"
+#include "constants.h"
+
+#include <QApplication>
+#include <QDir>
+#include <QDebug>
+
+using namespace Common;
+using namespace Constants;
+
+namespace Common {
+namespace Internal {
+class SettingsPrivate
+{
+public:
+    bool m_IsClean;
+};
+}  // End Internal
+}  // End Common
+
+/**
+  \brief Settings manager for all compatibility apps.
+  Use the QSettings interface for all data access.
+*/
+Settings::Settings(QObject *parent) :
+        QSettings(getIniFile(), QSettings::IniFormat, parent),
+        d(new Internal::SettingsPrivate())
+{
+    d->m_IsClean = false;
+}
+
+Settings::~Settings()
+{
+}
+
+bool Settings::isClean() const
+{
+    return d->m_IsClean;
+}
+
+/*QString Settings::getNumberVersion()
+{
+    QString numberVersion;
+    QFile fileVersion(applicationResourcesPath()+"/csv_files/informations.csv");
+    if (!fileVersion.open(QIODevice::ReadOnly))
+    {
+    	  qWarning() << __FILE__ << QString::number(__LINE__) << "INFORMATIONS FILE CANNOT OPEN" ;
+        }
+    QTextStream stream(&fileVersion);
+    while (!stream.atEnd())
+    {
+    	QString line = stream.readLine();
+    	if (!line.isEmpty())
+    	{
+    		  numberVersion = line;
+    	    }
+        }
+    return numberVersion;
+}*/
+
+
+/**
+  \brief Creates a shadowed dir in the home path of user, and set the ini file to this dir
+*/
+QString Settings::getIniFile() const
+{
+    // Application's name is required here and must be defined in the QApplication instance
+    Q_ASSERT(!qApp->applicationName().isEmpty());
+
+    // manage defaults --> ".AppName/config.ini"
+    QString tmpAppName = "rapidcomptamednew";//qApp->applicationName();
+    QString tmpFileName = "config.ini";
+    if (tmpAppName.contains(" "))
+        tmpAppName = tmpAppName.left(tmpAppName.indexOf(" "));
+    tmpAppName.prepend(".");
+
+    // Use the $HOME path like : $home/.appName/config.ini
+    QString iniFile = QString("%1/%2/%3").arg(QDir::homePath(), tmpAppName, tmpFileName);
+    QFileInfo ini(iniFile);
+    QDir dir(ini.absolutePath());
+    if (!ini.exists()) {
+        QFile initialConfig(applicationResourcesPath()+"/config/config.ini");
+        //dir.cdUp();
+        if (!dir.mkpath(dir.absolutePath())) {
+            qWarning() << QString("Settings : Unable to create dir : %1, no Ini File can be used.").arg(dir.absolutePath() + QDir::separator() + tmpAppName)<< __FILE__ << __LINE__;
+            return QString::null;
+        }
+        if (!initialConfig.copy(ini.absoluteFilePath())) {
+            qWarning() << "Settings : Unable to copy default config.ini to" << ini.absoluteFilePath()<< __FILE__ << __LINE__;
+        } else {
+            qWarning() << "Settings : Default config.ini copied to" << ini.absoluteFilePath();
+        }
+    }
+    else{
+        qWarning() << __FILE__ << QString::number(__LINE__) << " "+ini.absoluteFilePath() << " already exists";
+        }
+
+    qWarning() << QString("Using ini file %1").arg(iniFile);
+    return iniFile;
+}
+
+QVariant Settings::medinTuxManagerValue(const QString &ref)
+{
+    /** \todo here */
+    Q_UNUSED(ref);
+    return QVariant();
+}
+
+/** \brief return true if the app is running for the first time */
+bool Settings::isFirstTimeRunning() const
+{
+    return value(Constants::S_FIRSTTIME,true).toBool();
+}
+
+/** \sa Common::Settings::isFirstTimeRunning() */
+void Settings::noMoreFirstTimeRunning()
+{
+    setValue(Constants::S_FIRSTTIME,false);
+}
+
+bool Settings::writeAllDefaults()
+{
+    //drtux
+    //setValue(Constants::S_DRTUX_DB_LOGIN,"root");
+    //setValue(Constants::S_DRTUX_DB_PASSWORD,"");
+    //setValue(Constants::S_DRTUX_DB_HOST,"localhost");
+    //setValue(Constants::S_DRTUX_DB_PORT,"3306");
+    //compta
+    setValue(Constants::S_COMPTA_DB_LOGIN,"root");
+    setValue(Constants::S_COMPTA_DB_PASSWORD,"");
+    setValue(Constants::S_COMPTA_DB_HOST,"localhost");
+    setValue(Constants::S_COMPTA_DB_PORT,"3306");
+
+    setValue(Constants::S_FIRSTTIME, true);
+    setValue(Constants::NO_MORE_THESAURUS_MESSAGE,false);
+    return true;
+}
+
+QString Settings::iconPath() const
+{
+    return applicationResourcesPath() + "/pixmap";
+}
+
+QString Settings::applicationBundlePath() const
+{
+#ifdef Q_OS_MAC
+    return qApp->applicationDirPath() + "/../../../";
+#else
+    return qApp->applicationDirPath();
+#endif
+}
+
+QString Settings::applicationResourcesPath() const
+{
+    // In debug mode, returns the svn's resources path
+#ifdef DEBUG
+#  ifdef Q_OS_MAC
+    return QDir::cleanPath(qApp->applicationDirPath() + "/../../../../resources");
+#  else
+    return QDir::cleanPath(qApp->applicationDirPath() + "/../resources");
+#  endif
+#endif
+
+    // In release mode, returns the installed resources path
+#ifdef RELEASE
+#  ifdef Q_OS_MAC
+    return QDir::cleanPath(qApp->applicationDirPath() + "/../resources");
+#  else
+    return qApp->applicationDirPath() + "/../resources";
+#  endif
+#endif
+}
+
+QString Settings::userResourcesPath() const
+{
+#ifdef DEBUG
+    return applicationResourcesPath();
+#else
+    return QFileInfo(QSettings::fileName()).absolutePath();
+#endif
+}
+
+QString Settings::xmlExchangeFilePath() const{
+    QString xmlExchangeFilePath = applicationResourcesPath()+"/xml";
+    if (value("exchange_file_path/path").toString()!="absolute path of the exchange xml file")
+    {
+          xmlExchangeFilePath = value("exchange_file_path/path").toString();
+          qWarning() << __FILE__ << QString::number(__LINE__) << "exchange_file_path/path = " << xmlExchangeFilePath ;
+        }
+  return xmlExchangeFilePath;
+}
+
+void Settings::noMoreMessageThesaurus()
+{
+    setValue(Constants::NO_MORE_THESAURUS_MESSAGE,true);
+}
+
+const QString Settings::pathToConfigIni() const
+{
+    return QDir::homePath()+QDir::separator()+HIDDEN_REPERTORY+QDir::separator()+"config.ini";
+}
+
+const QString Settings::pathToHiddenRepertory() const
+{
+    return QDir::homePath()+QDir::separator()+HIDDEN_REPERTORY;
+}
+/*void Settings::configTest() {
+    //QSettings set(QDir::homePath()+"/."+"rapidcomptamed/config.ini",QSettings::IniFormat);
+    qDebug() << __FILE__ << " config path = " << QDir::homePath()+"/."+"rapidcomptamed"+"/config.ini";
+    if((!allKeys().contains("size/min_size_recettedialog"))
+     || (!allKeys().contains("size/pref_size_recettedialog"))){
+        qDebug() << __FILE__ << " in test positive";
+        QString key = "size/min_size_recettedialog";
+        QVariant var("200 100");
+        QString keyTwo = "size/pref_size_recettedialog";
+        QVariant varTwo("980 660");
+        setValue(key,var);
+        setValue(keyTwo,varTwo);
+
+    }
+}*/

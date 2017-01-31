@@ -1,0 +1,85 @@
+[Config]
+FirstTime=true
+
+[connect_DB]
+user=root
+host=localhost
+password=
+port=3306
+
+[Database-Accountancy]
+Driver=MYSQL
+MysqlDump="usr/bin/mysqldump"
+
+
+[number_of_Tables]
+nbrTables="actes_disponibles,ccam,comptes_bancaires,dates_comptable,depots,facturation,forfaits,headings,honoraires,immobilisations,indemnites_deplacement,informations,mouvements,mouvements_disponibles,nameindex,notes,paiements,payeurs,pourcentages,rapprochement_bancaire,seances,sites,thesaurus,utilisateurs,z_version"
+
+[size]
+min_size_recettedialog=200 100
+pref_size_recettedialog=1000 660
+
+[position]
+pos_x=0
+pos_y=0
+
+[choix_utilisateur_preferentiel]
+utilisateur=admin
+id_utilisateur=1
+compte_preferentiel=compte
+
+[valeur_acte_courant]
+acte=cs
+valeur=23
+
+[money]
+name=euros
+
+[auto_closing]
+choixouvert=oui
+temps=2000
+
+[ccam_rules]
+habituelle=100 50 0
+radiologie=100 50 0
+traumatologie=100 75 50 0
+
+[pourcentages_remboursements]
+90=AMO_Alsace
+70=AMO
+30=AMC
+10=AMC_Alsace
+
+[pourcentages_AMO_AMC]
+AMO = 70
+AMC = 30
+
+[pourcentages_depenses]
+taux=100 90 80 75 70 66 60 50 40 33 30 25 20 10
+
+[exchange_file_path]
+path=absolute path of the exchange xml file
+
+[2035_pdf]
+xpdf=1
+ypdf=5
+
+[Mess_thesaurus]
+nomoremessage=false;
+
+[choix_site_preferentiel]
+id_site_preferentiel=1
+
+[codec_program]
+codec_linux=UTF-8
+codec_windows=ISO 8859-1
+
+[debug]
+test=false
+
+[modifierrecettes]
+max_colored_model_rows=100
+
+[max_number_of_saved_files]
+number=3
+

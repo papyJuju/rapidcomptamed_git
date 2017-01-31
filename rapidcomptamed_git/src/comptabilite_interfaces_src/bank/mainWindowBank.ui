@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindowBankMovements</class>
+ <widget class="QMainWindow" name="MainWindowBankMovements">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>480</width>
+    <height>462</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Contrôle des balances et pointages</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>480</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_Fichier">
+    <property name="title">
+     <string>&amp;Fichier</string>
+    </property>
+    <addaction name="action_Quitter"/>
+   </widget>
+   <widget class="QMenu" name="menu_Analyses">
+    <property name="title">
+     <string>&amp;Analyses</string>
+    </property>
+    <addaction name="action_Recettes"/>
+    <addaction name="action_Mouvements"/>
+    <addaction name="actionDepotsBalance"/>
+   </widget>
+   <addaction name="menu_Fichier"/>
+   <addaction name="menu_Analyses"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_Quitter">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Quitter</string>
+   </property>
+  </action>
+  <action name="action_Recettes">
+   <property name="text">
+    <string>&amp;Recettes</string>
+   </property>
+  </action>
+  <action name="action_Mouvements">
+   <property name="text">
+    <string>&amp;Mouvements</string>
+   </property>
+  </action>
+  <action name="actionDepotsBalance">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Dépôts et balance</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

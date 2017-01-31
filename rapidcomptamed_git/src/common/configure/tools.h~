@@ -1,0 +1,31 @@
+#ifndef TOOLS_H
+#define TOOLS_H
+
+#include <QObject>
+#include <QHash>
+
+namespace ToolsSpace
+{
+
+class Tools:public QObject  
+{
+    Q_OBJECT
+    public:
+        enum ProgramsEnum
+        {
+            MEDINTUX_TYPE=0,
+            FREEMEDFORMS_TYPE
+            };
+        Tools (QObject * parent = 0);
+        ~Tools();
+        QString modifyCase(const QString & text);
+        QHash<int,QString> getHashOfPaymentsType() const;
+        QHash<int,QString> hashEnumPrograms() const;
+    private:
+        
+};  
+
+};
+
+#endif
+

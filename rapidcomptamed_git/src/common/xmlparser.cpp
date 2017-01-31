@@ -1,0 +1,130 @@
+/***************************************************************************
+ *   Copyright (C) 2009 by Docteur Pierre-Marie Desombre.   *
+ *   pm.desombre@medsyn.fr  *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU Library General Public License as       *
+ *   published by the Free Software Foundation; either version 3 of the    *
+ *   License, or (at your option) any later version.                       *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this program; if not, write to the                 *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+#include "xmlparser.h"
+#include <common/icore.h>
+#include <common/settings.h>
+#include <QMessageBox>
+#include <QtCore>
+#include <QtXml>
+using namespace  Common;
+
+static inline QString absolutePath() {return Common::ICore::instance()->settings()->applicationBundlePath();}
+static inline QString exchangeFilePath() {return Common::ICore::instance()->settings()->xmlExchangeFilePath();}
+static inline Common::Settings *settings(){return Common::ICore::instance()->settings();}
+
+XmlParser::XmlParser(QObject * parent)
+{
+    Q_UNUSED(parent);
+    m_exchangePath = settings()->xmlExchangeFilePath()+"/xmlEchangeFile.xml"; 
+}
+
+XmlParser::~XmlParser(){}
+
+void XmlParser::purgeXmlFile(){
+   qDebug() << __FILE__ << QString::number(__LINE__) <<  "exchangeFilePath() ="+exchangeFilePath();  
+   if(exchangeFilePath() != "absolute path of the exchange xml file" && exchangeFilePath() != "")
+   {
+       m_exchangePath = exchangeFilePath()+"/xmlEchangeFile.xml";
+       }
+   QFile xmlFile(m_exchangePath);
+   if(xmlFile.exists() == false)
+   {
+       qWarning() << __FILE__ << QString::number(__LINE__) << m_exchangePath+trUtf8(" does not exist.") ;
+       }
+   else
+   {
+       if(!xmlFile.open(QIODevice::ReadWrite|QIODevice::Truncate))
+       {
+           qWarning() << __FILE__ << QString::number(__LINE__) << trUtf8("xmlEchangeFile.xml cannot be purged.") ;
+           //return;
+           }
+    QTextStream out(&xmlFile);
+              out.setCodec("ISO 8859-1");
+              out << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+                  << "<programDatas>\n"
+                  << "  <programName>\n"
+                  << "  </programName>\n"
+                  << "  <name>\n"
+                  << "  </name>\n"
+                  << "  <firstname>\n"
+                  << "  </firstname>\n"
+                  << "  <dateofbirth>\n"
+                  << "  </dateofbirth>\n"
+                  << "  <uid>\n"
+                  << "  </uid>\n"
+                  << "  <price>\n"
+                  << "  </price>\n"
+                  << "  <priceCode>\n"
+                  << "  </priceCode>\n"
+                  << "  <user>\n"
+                  << "  </user>\n"
+                  << "  <otherparams>\n"
+                  << "  </otherparams>\n"
+                  << "  <version>\n"
+                  << "  </version>\n"
+                  << "</programDatas>\n";
+    }
+}
+
+QHash<QString,QString> XmlParser::readXmlFile(){
+    QHash<QString,QString> xmlList;
+    QDomDocument doc;
+    if(exchangeFilePath() != "absolute path of the exchange xml file" && exchangeFilePath() != "")
+    {
+        m_exchangePath = exchangeFilePath()+"/xmlEchangeFile.xml";
+        qDebug() << __FILE__ << QString::number(__LINE__) << " m_exchangePath =" << m_exchangePath ;
+        }
+    QFile xmlFile(m_exchangePath);
+    if(xmlFile.exists() == false)
+    {
+        qWarning() << __FILE__ << QString::number(__LINE__) << m_exchangePath+trUtf8(" does not exist.") ;     
+        }
+    else
+    {  
+        if(!xmlFile.open(QIODevice::ReadOnly))
+        {
+            qWarning() << __FILE__ << QString::number(__LINE__) << " xmlFile =" << xmlFile.fileName() << ":" << trUtf8("xmlEchangeFile.xml not found.");
+            return QHash<QString,QString>();
+            }
+        if(!doc.setContent(&xmlFile))
+        {
+            xmlFile.close();
+            QMessageBox::warning(0,trUtf8("Error"),trUtf8("xmlEchangeFile.xml cannot be analyzed."),QMessageBox::Ok);
+            xmlList.insert("error","error");
+            }
+        xmlFile.close();
+        QDomElement rootElement = doc.documentElement();
+        for(QDomNode n = rootElement.firstChild() ; !n.isNull() ;  n = n.nextSibling())
+        {
+            QString str;
+            QString tagName;
+            if(n.isElement())
+            {
+                qDebug() << "it is element";
+                QDomElement e = n.toElement();
+                str = e.text();
+                tagName = e.tagName();
+                qDebug() << "str ="+str+" tag = "+tagName;
+                xmlList.insert(tagName,str);
+                }
+             }
+       }
+    return xmlList;  
+}

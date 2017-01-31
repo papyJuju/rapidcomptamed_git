@@ -1,0 +1,233 @@
+#include "comptatorapidcompta.h"
+#include <common/settings.h>
+#include <common/constants.h>
+#include <common/icore.h>
+
+#include <common/configure/mdp.h>
+
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QMessageBox>
+#include <QDir>
+#include <QFile>
+#include <QDateTime>
+#include <QDebug>
+
+using namespace Common;
+using namespace Constants;
+
+static inline Common::Settings *settings() {return Common::ICore::instance()->settings();}
+
+ComptaToRapid::ComptaToRapid(QWidget * parent)
+{
+    setupUi(this);
+    QString driver = settings()->value(S_COMPTA_DRIVER).toString();
+    if (driver.contains("SQLITE"))
+    {
+        QMessageBox::information(0,tr("Info"),tr("Driver Sqlite, l'ancienne base sera sauvegardée dans .rapidcomptamed"),QMessageBox::Ok);
+        listWidget->hide();
+        explanationLabel->setText("<html>Cliquer sur Ok pour transf&eacute;rer la base.</html>");
+        }
+    if (driver.contains("MYSQL"))
+    {
+        mdp * databaseData = new mdp;
+        databaseData->disableEdits();
+        qDebug() << __FILE__ << QString::number(__LINE__) << " mdp edit disable ";
+        if(databaseData->exec() == QDialog::Accepted) 
+        {
+            m_pass = databaseData->mdpPassword();
+            m_driverbase = QSqlDatabase::addDatabase(MYSQL,DB_FIRST_CONNECTION);
+            m_driverbase.setHostName(settings()->value(S_COMPTA_DB_HOST).toString());
+            m_driverbase.setDatabaseName("mysql");
+            m_driverbase.setUserName(settings()->value(S_COMPTA_DB_LOGIN).toString());
+            m_driverbase.setPort(settings()->value(S_COMPTA_DB_PORT).toInt());
+            m_driverbase.setPassword(m_pass);
+            if ((!m_driverbase.isOpen()) && (!m_driverbase.open()))
+            {
+                QMessageBox::warning(0,tr("Warning"),tr("Impossible de se connecter mysql"),QMessageBox::Ok);
+                }
+            }
+    getBasesToInsert();
+    connect(listWidget,SIGNAL(itemPressed(QListWidgetItem *)),this,SLOT(getBaseToInsert(QListWidgetItem *)));
+        }    
+    connect(buttonBox,SIGNAL(accepted()),this,SLOT(run()));
+    connect(buttonBox,SIGNAL(rejected()),this,SLOT(close()));
+}
+
+ComptaToRapid::~ComptaToRapid(){}
+
+void ComptaToRapid::getBasesToInsert()
+{   
+    QSqlQuery qy(m_driverbase);
+    QString reqbases = QString("show databases");
+    QStringList listofbases;
+    if (!qy.exec(reqbases))
+    {
+          qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+        }
+    while (qy.next())
+    {
+        listofbases << qy.value(0).toString();
+        }
+    foreach(QString base,listofbases){
+        listWidget->addItem(base);
+        }    
+}
+
+void ComptaToRapid::getBaseToInsert(QListWidgetItem *item)
+{
+    m_basechoosen = item->data(Qt::DisplayRole).toString();
+    if (!connectOldBase(m_basechoosen))
+    {
+          QMessageBox::warning(0,tr("Warning"),tr("Impossible de connecter l'ancienne table."),QMessageBox::Ok);
+          return;
+        }
+    
+}
+
+void ComptaToRapid::run()
+{
+    QString driver = settings()->value(S_COMPTA_DRIVER).toString();
+    if (driver.contains("SQLITE"))
+    {
+        QApplication::setOverrideCursor(Qt::BusyCursor);
+        if (!renameSqliteBase())
+        {
+              QMessageBox::warning(0,tr("Warning"),tr("Erreur de récupération de la base."),QMessageBox::Ok);
+              QApplication::restoreOverrideCursor();
+              return;
+            }
+        QApplication::restoreOverrideCursor();
+        QMessageBox::information(0,tr("Info"),tr("La base a été copiée dans la nouvelle."),QMessageBox::Ok);
+        }
+     if (driver.contains("MYSQL")){
+         QString text = tr("Attention ! La base repidecomptabilite "
+                       "va être écrasée par l'ancienne base,\nvoulez vous continuer ?");
+         QMessageBox msgBox;
+         msgBox.setText(text);
+         msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+         msgBox.setDefaultButton(QMessageBox::Cancel);
+         int ret = msgBox.exec();
+         switch(ret){
+            case QMessageBox::Cancel :
+                close();
+                return;
+                break;
+            case QMessageBox::Ok :
+                break;
+            default :
+                break;    
+         }
+        QApplication::setOverrideCursor(Qt::BusyCursor);
+        if (!runCopyBase())
+        {
+            qWarning() << __FILE__ << QString::number(__LINE__) << "unable to copy old base" ;
+            QMessageBox::warning(0,tr("Warning"),tr("Erreur de récupération de la base."),QMessageBox::Ok);
+            QApplication::restoreOverrideCursor();
+              return;
+            }
+        QApplication::restoreOverrideCursor();
+    }
+}
+
+bool ComptaToRapid::connectOldBase(const QString & basechoosen)
+{
+    QSqlDatabase db;
+    db = QSqlDatabase::addDatabase("QMYSQL", basechoosen);
+    db.setHostName(settings()->value(S_COMPTA_DB_HOST).toString());
+    db.setDatabaseName(basechoosen);
+    db.setUserName(settings()->value(S_COMPTA_DB_LOGIN).toString());
+    db.setPort(settings()->value(S_COMPTA_DB_PORT).toInt());
+    db.setPassword(m_pass);
+    if ((!db.isOpen()) && (!db.open()))
+    {
+          QMessageBox::warning(0,tr("Warning"),tr("Impossible de se connecter à la base : ")+basechoosen,QMessageBox::Ok);
+          return false;
+        }
+    QSqlQuery qy(db);
+    QString reqtables = QString("show tables from %1").arg(basechoosen);
+    if (!qy.exec(reqtables))
+    {
+          qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+          return false;
+        }
+    while (qy.next())
+    {
+        m_oldtables << qy.value(0).toString();
+        }
+    foreach(QString table,m_oldtables){
+        QSqlQuery qfields(db);
+        QString reqfields = QString("show columns from %1").arg(table);
+        QStringList listoffields;
+        if (!qfields.exec(reqfields))
+        {
+              qWarning() << __FILE__ << QString::number(__LINE__) << qfields.lastError().text() ;
+              return false;
+            }
+        while (qfields.next())
+        {
+            listoffields << qfields.value(0).toString();
+            }
+        QString fields = listoffields.join(",");
+        m_hasholdfields.insert(table,fields);
+        }
+    return true;
+}
+
+bool ComptaToRapid::runCopyBase()
+{
+    QSqlDatabase rapidecomptaDb = QSqlDatabase::database(DB_ACCOUNTANCY);    
+    foreach(QString table,m_oldtables){
+        QSqlQuery qyTruncateTable(rapidecomptaDb);
+        QString reqTruncatetable = QString("truncate %1").arg(table);
+        if (!qyTruncateTable.exec(reqTruncatetable))
+        {
+              qWarning() << __FILE__ << QString::number(__LINE__) << qyTruncateTable.lastError().text() ;
+              QMessageBox::warning(0,tr("Warning"),qyTruncateTable.lastError().text(),QMessageBox::Ok);
+            }
+        QSqlQuery qy(m_driverbase);
+        QString oldfields;
+        oldfields = m_hasholdfields.value(table);
+        QString reqtabletotable = QString("insert into %1.%2(%3) select %3 from %4.%2")
+        .arg(Constants::DB_ACCOUNTANCY,table,oldfields,m_basechoosen);
+        if (!qy.exec(reqtabletotable))
+        {
+              qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+              QMessageBox::warning(0,tr("Warning"),qy.lastError().text()+"\n"+qy.lastQuery(),QMessageBox::Ok);
+              return false;
+            }
+        }
+    QMessageBox::information(0,tr("Info"),tr("La base a été copiée"),QMessageBox::Ok);
+    return true;
+}
+
+bool ComptaToRapid::renameSqliteBase()
+{
+    QString oldCompta = QDir::homePath() + QDir::separator() + ".rapidcomptamed"+ QDir::separator() +"comptabilite" + ".db";
+    QString newCompta = settings()->userResourcesPath() + QDir::separator() + DB_ACCOUNTANCY + ".db";
+    QString comptabak = settings()->userResourcesPath() + QDir::separator() +"comptabilite" + ".db" + QDateTime::currentDateTime().toString("yyyyMMddHHmm");
+
+    QFile oldComptaFile(oldCompta);
+    if (!oldComptaFile.exists())
+    {
+          QMessageBox::warning(0,tr("Warning"),oldCompta + tr(" n'existe pas."),QMessageBox::Ok);
+          return false;
+        }
+    
+    if (!oldComptaFile.copy(comptabak))
+    {
+        QMessageBox::warning(0,tr("Warn"),tr("Impossible de sauvegarder l'ancienne base : ")+ oldCompta,QMessageBox::Ok);
+        return false;
+        }
+    else
+    {
+        QFile newComptaFile(newCompta);
+        newComptaFile.remove();
+        }
+    if (!oldComptaFile.copy(newCompta))
+    {
+          QMessageBox::warning(0,tr("Warning"),tr("Impossible de récupérer l'ancienne base dans rapidecomptabilite."),QMessageBox::Ok);
+          return false;
+        }
+    return true;
+}

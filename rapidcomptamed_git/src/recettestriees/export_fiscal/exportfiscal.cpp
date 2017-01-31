@@ -1,0 +1,470 @@
+#include "exportfiscal.h"
+#include <common/constants.h>
+#include <common/tablesdiagrams.h>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDir>
+#include <QDebug>
+#include <QMessageBox>
+
+using namespace Common;
+using namespace Constants;
+using namespace TablesDiagramsHonoraires;
+using namespace TablesDiagramsMouvements;
+using namespace CompteBancairesSpace;
+
+
+ExportFiscal::ExportFiscal(QWidget * parent)
+{
+    Q_UNUSED(parent);
+    setupUi(this);
+    SEPARATEUR_DE_CHAMP = "|";
+    ENCADREUR_DE_CHAMP = "";//"\"";
+    SEPARATEUR_DE_LIGNE = "\r\n";
+    m_db = QSqlDatabase::database(Constants::DB_ACCOUNTANCY);
+    initialiseDatas(); 
+    connect(okButton,SIGNAL(pressed()),this,SLOT(exportfile()));
+    connect(quitButton,SIGNAL(pressed()),this,SLOT(close()));
+}
+
+ExportFiscal::~ExportFiscal(){}
+
+void ExportFiscal::initialiseDatas()
+{
+    yearDateEdit->setDisplayFormat("yyyy");
+    yearDateEdit->setDate(QDate::currentDate());
+    QStringList usersList;
+    usersList = users();
+    tabUserComboBox->addItems(usersList);
+    QStringList sitesList;
+    sitesList = sites();
+    tabSiteComboBox->addItems(sitesList);
+    QStringList comptesList;
+    comptesList = comptes();
+    tabCompteComboBox->addItems(comptesList);
+    fileexportedpath = QDir::homePath()+QDir::separator()+"exportation_fiscale";
+    exportLineEdit->setText(fileexportedpath);
+}
+
+QStringList ExportFiscal::users()
+{
+    enum {IDUSER = 0,LOGIN};
+    QStringList list;
+    QString requete = QString("select %1,%2 from %3").arg("id_usr","login","utilisateurs");
+    QSqlQuery qy(m_db);
+    if (!qy.exec(requete))
+    {
+    	qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+        }
+    while (qy.next())
+    {
+    	list << qy.value(IDUSER).toString()+"|"+qy.value(LOGIN).toString();
+        }
+    return list;
+}
+
+QStringList ExportFiscal::sites()
+{
+    enum {IDSITE=0,SITE};
+    QStringList list;
+    QString requete = QString("select %1,%2 from %3").arg("id_site","site","sites");
+    QSqlQuery qy(m_db);
+    if (!qy.exec(requete))
+    {
+    	qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+        }
+    while (qy.next())
+    {
+    	list << qy.value(IDSITE).toString()+"|"+qy.value(SITE).toString();
+        }    
+    return list;
+}
+
+QStringList ExportFiscal::comptes()
+{
+    enum {IDCOMPTE=0,LIBELLE};
+    QStringList list;
+    QString requete = QString("select %1,%2 from %3").arg("id_compte","libelle","comptes_bancaires");
+    QSqlQuery qy(m_db);
+    if (!qy.exec(requete))
+    {
+    	qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+        }
+    while (qy.next())
+    {
+    	list << qy.value(IDCOMPTE).toString()+"|"+qy.value(LIBELLE).toString();
+        }    
+    return list;
+}
+
+void ExportFiscal::exportfile()
+{
+    enum ComboEnum {IDCOMBO=0,NAMECOMBO};
+    enum TypeMouvementEnum {CREDIT_TYPE = 0, DEBIT_TYPE};
+    QApplication::setOverrideCursor(QCursor(Qt::BusyCursor));
+    
+    
+    QString exportationstring;
+    QString idandlogin = tabUserComboBox->currentText();//"id_usr|login"
+    QString idandsite = tabSiteComboBox->currentText();//"id_site|site"
+    QString datebegin = yearDateEdit->date().toString("yyyy")+"-01-01";
+    QString dateend = yearDateEdit->date().toString("yyyy")+"-12-31";
+    QString dateendcontinue = dateend.remove("-");
+    QString exportfilepath;
+    exportfilepath = exportLineEdit->text();
+    QString numero_siret_user = get_numero_siret_user(exportfilepath);
+    QDir dir(exportfilepath);
+    if (!dir.exists())
+    {
+        if(dir.mkpath(exportfilepath))
+        {
+            qWarning() << __FILE__ << QString::number(__LINE__) << exportfilepath << " has been created." ;
+            }
+        }
+    QString identity = idandlogin+"_"+idandsite;
+    identity.replace("?","e");
+    identity.replace("*","a");
+    identity.replace("|","_");
+    QString exportfile = exportfilepath+QDir::separator()+numero_siret_user+"FEC"+dateendcontinue; //exportfilepath+QDir::separator()+identity+"_exportfiscal.txt";
+    QFile fileforexport(exportfile);
+    if (!fileforexport.open(QIODevice::WriteOnly))
+    {
+    	qWarning() << __FILE__ << QString::number(__LINE__) << "unable to open " << exportfile ;
+    	}
+    QTextStream stream(&fileforexport);
+    stream << headersTax()+SEPARATEUR_DE_LIGNE;
+    exportationstring += headersTax()+SEPARATEUR_DE_LIGNE;
+    //inscrire recettes
+    QString table = tablesHash().value(TablesSpace::HONORAIRES);
+    QString idusercolumn = honorairesColumnsNamesHash().value(TablesDiagramsHonoraires::ID_USR);
+    QString iduser = idandlogin.split("|")[IDCOMBO];
+    QString compte_bancaire_courant = get_compte_bancaire_courant(iduser);
+    QString idsitecolumn = honorairesColumnsNamesHash().value(TablesDiagramsHonoraires::ID_SITE);
+    QString idsite = idandsite.split("|")[IDCOMBO];
+    QString columns = honorairesColumns();
+    QSqlQuery qy(m_db);
+    QString reqrecettes = QString("select %1 from %2 where %3 = '%4' and %5 = '%6'")
+                         .arg(columns,table,idusercolumn,iduser,idsitecolumn,idsite); 
+    QString daterecettes = "date";
+
+    reqrecettes += QString( " and %1 between '%2' and '%3'").arg(daterecettes,datebegin,dateend);
+    qDebug() << __FILE__ << QString::number(__LINE__) << reqrecettes ;
+    QHash<int,int> hashdispatch = dispatchRecettesHash();
+    if (!qy.exec(reqrecettes))
+    {
+    	qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+        }
+    
+    while (qy.next())
+    {
+    	//stream << SEPARATEUR_DE_CHAMP;
+    	//exportationstring += SEPARATEUR_DE_CHAMP;
+    	for (int exportcol = 1; exportcol < ExportFiscalEnumMaxParam; ++exportcol) 
+    	{
+    	        QString datastring;
+    	        int idcolumnhono = hashdispatch.value(exportcol);
+    	        if (idcolumnhono == -1)
+    	        {
+    	            datastring = QString();
+    	            }
+    	        else if (idcolumnhono == EXPORTFISCAL_CREDIT) //les recettes
+    	        {
+    	             datastring = QString::number(qy.value(TablesDiagramsHonoraires::ESP).toDouble()
+    	                          +qy.value(TablesDiagramsHonoraires::CHQ).toDouble()
+    	                          +qy.value(TablesDiagramsHonoraires::CB).toDouble()
+    	                          +qy.value(TablesDiagramsHonoraires::VIR).toDouble()
+    	                          +qy.value(TablesDiagramsHonoraires::AUTRE).toDouble()
+    	                          +qy.value(TablesDiagramsHonoraires::DAF).toDouble()
+    	                          +qy.value(TablesDiagramsHonoraires::DU).toDouble());
+    	             datastring = montantavecvirgule(datastring);
+    	        	}
+    	        else if (idcolumnhono == EXPORTFISCAL_MODERGLT)
+    	        {
+    	                if (qy.value(TablesDiagramsHonoraires::ESP).toDouble()>0)
+    	                {
+    	                    datastring = "especes";
+    	                    }
+    	                else if (qy.value(TablesDiagramsHonoraires::CHQ).toDouble()>0)
+    	                {
+    	                    datastring = "cheque";
+    	                    }
+    	                else if (qy.value(TablesDiagramsHonoraires::CB).toDouble()>0)
+    	                {
+    	                    datastring = "carte bancaire";
+    	                    }
+    	                else if (qy.value(TablesDiagramsHonoraires::VIR).toDouble()>0)
+    	                {
+    	                    datastring = "virement";
+    	                    }
+    	                else if (qy.value(TablesDiagramsHonoraires::AUTRE).toDouble()>0)
+    	                {
+    	                    datastring = "autre";
+    	                    }
+    	                else if (qy.value(TablesDiagramsHonoraires::DAF).toDouble()>0)
+    	                {
+    	                    datastring = "dispense avance de frais";
+    	                    }
+    	                else if (qy.value(TablesDiagramsHonoraires::DU).toDouble()>0)
+    	                {
+    	                    datastring = "du";
+    	                    }
+    	                else{
+    	                    qWarning() << __FILE__ << QString::number(__LINE__) << "error" ;
+    	                    }
+    	        	}
+    	        else if (idcolumnhono == TablesDiagramsHonoraires::DATE )// mettre sous format aaaaMMjj 
+    	             {
+    	             datastring = qy.value(idcolumnhono).toString();
+    	             datastring = datastring.remove("-");
+    	             }
+    	        else if (exportcol == COMPTENUM )
+    	            {
+    	            datastring = compte_bancaire_courant;
+    	            qDebug() << "datastring = compte_bancaire_courant : " + compte_bancaire_courant;
+    	            }
+    	        else{
+    	            datastring = qy.value(idcolumnhono).toString();
+    	            }
+    	        stream << ENCADREUR_DE_CHAMP << datastring << ENCADREUR_DE_CHAMP << SEPARATEUR_DE_CHAMP;
+    	        exportationstring += ENCADREUR_DE_CHAMP+datastring+ENCADREUR_DE_CHAMP+SEPARATEUR_DE_CHAMP;
+    		}//for
+         stream << SEPARATEUR_DE_LIGNE;
+         exportationstring +=SEPARATEUR_DE_LIGNE;
+        }//while
+    //inscrire depenses
+    QString table_mouvements = tablesHash().value(TablesSpace::MOUVEMENTS);
+    QSqlQuery qymvts(m_db);
+    QString columnsmvts = mouvementsColumns();
+    QString idandcompte = tabCompteComboBox->currentText();
+    QString idcomptecolumn = mouvementsColumnsNamesHash().value(ID_COMPTE);
+    QString idcompte = idandcompte.split("|")[IDCOMBO];
+    QHash <int,int> hashdispatchmvts = dispatchMouvementsHash();
+    QString reqmvts = QString("select %1 from %2 where %3 = '%4' and %5 = '%6'")
+                         .arg(columnsmvts,table_mouvements,idusercolumn,iduser,idcomptecolumn,idcompte);
+    reqmvts += QString(" and %1 between '%2' and '%3'").arg(daterecettes,datebegin,dateend); // date et non date valeur : a corriger ?
+    qDebug() << __FILE__ << QString::number(__LINE__) << reqmvts ;
+    if (!qymvts.exec(reqmvts))
+    {
+        qWarning() << __FILE__ << QString::number(__LINE__) << qymvts.lastError().text();
+        }
+    while (qymvts.next())
+    {
+        //stream << SEPARATEUR_DE_CHAMP;
+    	//exportationstring += SEPARATEUR_DE_CHAMP;
+    	int typedebitoucredit = qymvts.value(TablesDiagramsMouvements::TYPE).toInt();
+    	for (int exportcolumn = 1; exportcolumn < ExportFiscalEnumMaxParam; ++exportcolumn )
+    	{
+    	    QString datastring;
+    	    int idcolumnmvt = hashdispatchmvts.value(exportcolumn);
+    		if (idcolumnmvt == -1)
+    		{
+    		    datastring = QString();
+    		    }
+    		else if (idcolumnmvt == EXPORTFISCAL_CREDIT)
+    		{
+    		    if (typedebitoucredit == CREDIT_TYPE)
+    		    {
+    		        datastring = qymvts.value(TablesDiagramsMouvements::MONTANT).toString();
+    		        datastring = montantavecvirgule(datastring);
+    		        }
+    		    else{
+    		        datastring = QString();
+    		        }
+    		    }
+    		else if (idcolumnmvt == EXPORTFISCAL_DEBIT)
+    		{
+    		    if (typedebitoucredit == DEBIT_TYPE)
+    		    {
+    		        datastring = qymvts.value(TablesDiagramsMouvements::MONTANT).toString();
+    		        datastring = montantavecvirgule(datastring);
+    		        }
+    		    else{
+    		        datastring = QString();
+    		        }
+    		    }
+                 else if (idcolumnmvt == TablesDiagramsMouvements::DATE ) // mettre sous format aaaaMMjj 
+    	             {
+    	             datastring = qymvts.value(idcolumnmvt).toString();
+    	             datastring = datastring.remove("-");
+    	             }    	             
+    	         else if (idcolumnmvt == DATE_VALEUR ) // mettre sous format aaaaMMjj 
+    	             {
+    	             datastring = qymvts.value(idcolumnmvt).toString();
+    	             datastring = datastring.remove("-");
+    	             }
+    	         else if (exportcolumn == COMPTENUM )
+    	            {
+    	            datastring = compte_bancaire_courant;
+    	            qDebug() << "datastring = compte_bancaire_courant : " + compte_bancaire_courant;
+    	            }
+    		else
+    		{
+    		    datastring = qymvts.value(idcolumnmvt).toString();
+    		    }
+    		stream << ENCADREUR_DE_CHAMP << datastring << ENCADREUR_DE_CHAMP << SEPARATEUR_DE_CHAMP;
+    	        exportationstring += ENCADREUR_DE_CHAMP+datastring+ENCADREUR_DE_CHAMP+SEPARATEUR_DE_CHAMP;
+    		}//for
+    	 stream << SEPARATEUR_DE_LIGNE;
+         exportationstring +=SEPARATEUR_DE_LIGNE;
+        }///while
+    //
+    textEdit->setPlainText(exportationstring);
+    QApplication::restoreOverrideCursor();
+}
+
+QHash<int,int> ExportFiscal::dispatchRecettesHash()
+{
+    QHash<int,int> hash; 
+    hash.insert(JOURNALCODE,-1);//lier columns recettes et columns export fiscal
+    hash.insert(JOURNALLIB,-1);
+    hash.insert(ECRITURENUM,ID_HONO);
+    hash.insert(ECRITUREDATE,TablesDiagramsHonoraires::DATE);
+    hash.insert(COMPTENUM,-2);
+    hash.insert(COMPTELIB,TablesDiagramsHonoraires::ID_USR);
+    hash.insert(COMPAUXNUM,-1);
+    hash.insert(COMPAUXLIB,-1);
+    hash.insert(PIECEREF,ID_HONO);
+    hash.insert(PIECEDATE,TablesDiagramsHonoraires::DATE);
+    hash.insert(ECRITURELIB,ACTE);
+    hash.insert(DEBIT,-1);
+    hash.insert(CREDIT,EXPORTFISCAL_CREDIT);
+    hash.insert(ECRITURELET,-1);
+    hash.insert(DATELET,-1);
+    hash.insert(VALIDDATE,-1);
+    hash.insert(MONTANTDEVISE,-1);
+    hash.insert(IDEVISE,-1);
+    hash.insert(DATERGLT,TablesDiagramsHonoraires::DATE);
+    hash.insert(MODERGLT,EXPORTFISCAL_MODERGLT);
+    hash.insert(NATOP,-1);
+    hash.insert(IDCLIENT,-1);
+    return hash;    
+}
+
+QHash<int,int> ExportFiscal::dispatchMouvementsHash()
+{
+    QHash<int,int> hash;
+    hash.insert(JOURNALCODE,-1);//lier columns mouvements et columns export fiscal
+    hash.insert(JOURNALLIB,-1);
+    hash.insert(ECRITURENUM,ID_MOUVEMENT);
+    hash.insert(ECRITUREDATE,TablesDiagramsMouvements::DATE);
+    hash.insert(COMPTENUM,-2);
+    hash.insert(COMPTELIB,TablesDiagramsMouvements::ID_USR);
+    hash.insert(COMPAUXNUM,-1);
+    hash.insert(COMPAUXLIB,-1);
+    hash.insert(PIECEREF,ID_MOUVEMENT);
+    hash.insert(PIECEDATE,TablesDiagramsMouvements::DATE);
+    hash.insert(ECRITURELIB,LIBELLE);
+    hash.insert(DEBIT,EXPORTFISCAL_DEBIT);
+    hash.insert(CREDIT,EXPORTFISCAL_CREDIT);
+    hash.insert(ECRITURELET,-1);
+    hash.insert(DATELET,-1);
+    hash.insert(VALIDDATE,DATE_VALEUR);
+    hash.insert(MONTANTDEVISE,-1);
+    hash.insert(IDEVISE,-1);
+    hash.insert(DATERGLT,TablesDiagramsMouvements::DATE);
+    hash.insert(MODERGLT,TablesDiagramsMouvements::REMARQUE);
+    hash.insert(NATOP,TablesDiagramsMouvements::DETAIL);
+    hash.insert(IDCLIENT,-1);
+    return hash;
+}
+
+QString ExportFiscal::honorairesColumns()
+{
+    QString columns;
+    QStringList list;
+    QHash<int,QString> hash;
+    hash = honorairesColumnsNamesHash();
+    for (int i = 0; i < hash.count(); ++i)
+    {
+    	list << hash.value(i);
+        }
+    columns = list.join(",");
+    return columns;
+}
+
+QString ExportFiscal::mouvementsColumns()
+{
+    QString columns;
+    QStringList list;
+    QHash<int,QString> hash;
+    hash = mouvementsColumnsNamesHash();
+    for (int i = 0; i < hash.count(); ++i)
+    {
+    	list << hash.value(i);
+        }
+    columns = list.join(",");
+    return columns;
+}
+
+QString ExportFiscal::headersTax()
+{
+    enum taxExportHeadersEnum {NUM=0,INFORMATION,NOM_DU_CHAMP,TYPE_DE_CHAMP};    
+    QString headers;
+    //headers += SEPARATEUR_DE_CHAMP;
+    QStringList lines = QString(tableauCodesExportationFiscale).split("$");
+    foreach(QString line,lines)
+    {
+        QStringList listinline;
+        listinline = line.split("|");
+        QString nomduchamp = listinline[NOM_DU_CHAMP];
+        if (nomduchamp == QString("NOM DU CHAMP"))
+        {
+            continue;
+            }
+        headers += ENCADREUR_DE_CHAMP+nomduchamp+ENCADREUR_DE_CHAMP+SEPARATEUR_DE_CHAMP;
+        }
+    return headers;
+}
+
+QString ExportFiscal::montantavecvirgule(QString & montant)
+{
+    QString result;
+    if (montant.contains(","))
+    {
+        result = montant;
+        }
+    else if (montant.contains("."))
+    {
+        result = montant.replace(".",",");
+        }
+    else{
+        result = montant+",00";
+        }
+    return result;
+}
+
+QString ExportFiscal::get_compte_bancaire_courant(QString & iduser)
+{
+    QSqlQuery qy(m_db);
+    QString numcompte;    
+    QString idusr = iduser;
+    QString req = QString("select %1 from %2 where %3 = '%4'").arg("rib_numcompte","comptes_bancaires","id_usr",idusr);
+    if (!qy.exec(req))
+    {
+    	qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+        }  
+    while(qy.next())
+    {
+        numcompte = qy.value(0).toString();
+    } 
+    qDebug() << "numcompte = "+ numcompte;
+    return numcompte;
+}
+
+QString ExportFiscal::get_numero_siret_user(QString & exportfiledir)
+{
+    QString num_siret_file = "numero_siret_user";
+    QString pathNumSiretFile = exportfiledir+QDir::separator()+num_siret_file;
+    QString num_siret;
+    QFile file(pathNumSiretFile);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+    	QMessageBox::warning(0,tr("attention"),trUtf8("Remplissez le fichier ")+pathNumSiretFile+trUtf8(" avec votre numero SIRET. "),QMessageBox::Ok);
+    	file.open(QIODevice::WriteOnly);
+    	}
+    while (!file.atEnd())
+    {
+        num_siret = file.readLine();
+        }    	
+   return num_siret;
+}

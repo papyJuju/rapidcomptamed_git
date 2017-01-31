@@ -1,0 +1,20 @@
+Pour récupérer ses données de la table Comptabilite de MedinTux dans la table 
+comptabilité de rapidcomptamed :
+ouvrir un terminal.
+mysqldump -u root -p Comptabilite > dumpCompta.sql
+mysql -u root -p
+create database rapidecomptabilite;
+quit;
+mysql -u root -p rapidecomptabilite < dumpCompta.sql
+
+Vérification :
+mysql -u root -p
+use comptabilite;
+show tables from comptabilite;
+show columns from honoraires;
+SELECT * FROM honoraires;
+et si vous êtes sûr d'avoir tout récupéré :
+drop database Comptabilite;
+sinon gardez là en secours.
+quit;
+Lancer comptatriee > parametrage > completer la base.

@@ -1,0 +1,294 @@
+#include "facturationIO.h"
+#include "facturemodel.h"
+
+#include <common/constants.h>
+#include <common/tablesdiagrams.h>
+#include <common/configure/iotools.h>
+#include <common/configure/tools.h>
+
+#include <QHash>
+#include <QStringList>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QDate>
+#include <QDebug>
+#include <QMessageBox>
+
+using namespace Common;
+using namespace Constants;
+using namespace FacturationDiagrams;
+using namespace FacturationSpace;
+using namespace ToolsSpace;
+
+FacturationIO::FacturationIO(QObject * parent)
+{
+    Q_UNUSED(parent);
+    m_db = QSqlDatabase::database(DB_ACCOUNTANCY);
+    m_rowseparator = "<br/>";
+    m_fieldseparator = "<tab>";
+    Tools t(this);
+    m_hashtypepayment=t.getHashOfPaymentsType();
+}
+
+FacturationIO::~FacturationIO(){}
+
+double FacturationIO::getValueFromCcamAct(const QString & act) 
+{
+    Iotools io(this);
+    return io.getValueFromAct(act);
+}
+
+
+
+bool FacturationIO::record(FactureModel *model,const QString & factureid,const QString & programmeName)
+{
+    QSqlTableModel modelfacturation(this,m_db);
+    modelfacturation.setTable(TABLE_FACTURATION);
+    modelfacturation.select();
+    QString facturetorecord = getStringToRecordFromFactureModel(model);
+    if (!factureid.isEmpty())
+    {
+        int rowfacturation = getrowoffacturation(modelfacturation,factureid);
+        if (!modelfacturation.setData(modelfacturation.index(rowfacturation,DIVERS),facturetorecord,Qt::EditRole))
+        {
+              qWarning() << __FILE__ << QString::number(__LINE__) << modelfacturation.lastError().text() ;
+              return false;
+            }
+        }
+    else
+    {
+        int row = modelfacturation.rowCount();
+        if (!modelfacturation.insertRows(row,1))
+        {
+              qWarning() << __FILE__ << QString::number(__LINE__) << modelfacturation.lastError().text() ;
+              return false;
+            }
+        if (!modelfacturation.setData(modelfacturation. index(row,DIVERS),facturetorecord,Qt::EditRole))
+        {
+              qWarning() << __FILE__ << QString::number(__LINE__) << modelfacturation.lastError().text() ;
+              return false;
+            }
+        }
+    if (!modelfacturation.submit())
+    {
+          qWarning() << __FILE__ << QString::number(__LINE__) << modelfacturation.lastError().text() ;
+          return false;
+        }
+    if (!recordValidatesActsInHonoraires(model,programmeName))
+    {
+          QMessageBox::warning(0,tr("Warning"),
+                               tr("Impossible d'enregistrer les actes payés dans la table Honoraires !"),QMessageBox::Ok);
+          return false;
+        }
+    return true;
+}
+
+bool FacturationIO::deleteBill(const QString & idfacture)
+{
+    QString req = QString("delete from %1 where %2 = '%3'").arg(QString(TABLE_FACTURATION),"id_facture",idfacture);
+    QSqlQuery qy(m_db);
+    if (!qy.exec(req))
+    {
+          qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+          return false;
+        }
+    return true;
+}
+
+QString FacturationIO::getStringToRecordFromFactureModel(FactureModel *model)
+{
+    QString returnstring;
+    for ( int row = 0; row < model->rowCount(); ++row)
+    {
+          for ( int col = 0; col < FacturationHeadersModel_MaxParam;  ++col )
+          {
+              QString data = model->data(model->index(row,col),Qt::DisplayRole).toString();
+              returnstring += data+m_fieldseparator;
+              }
+           returnstring += m_rowseparator;
+        }
+    return returnstring;
+}
+
+QString FacturationIO::getFactureOfId(const QString & factureid)
+{
+    QString facturestring;
+    QString filter = QString("%1='%2'").arg("id_facture",factureid);
+    QSqlTableModel modelfacturation(this,m_db);
+    modelfacturation.setTable(TABLE_FACTURATION);
+    modelfacturation.setFilter(filter);
+    modelfacturation.select();
+    QByteArray array = modelfacturation.data(modelfacturation.index(0,DIVERS),Qt::DisplayRole).toByteArray();
+    facturestring = tr(array);
+    return facturestring;
+}
+
+int FacturationIO::getrowoffacturation(QSqlTableModel & modelfacturation,const QString & factureid)
+{
+    int row = 0;
+    for ( int i = 0; i < modelfacturation.rowCount(); ++i)
+    {
+        if (modelfacturation.data(modelfacturation.index(i,ID_FACTURE),Qt::DisplayRole).toString() == factureid)
+        {
+              row = i;
+            }
+        }
+    return row;
+}
+
+QStringList FacturationIO::listOfFacturesId()
+{
+    QStringList listofid;
+    QSqlTableModel modelfacturation(this,m_db);
+    modelfacturation.setTable(TABLE_FACTURATION);
+    modelfacturation.select();
+    for ( int i = 0; i < modelfacturation.rowCount(); ++i)
+    {
+          QString id = modelfacturation.data(modelfacturation.index(i,ID_FACTURE),Qt::DisplayRole).toString();
+          listofid << id;
+        }
+    return listofid;
+}
+
+FactureModel * FacturationIO::getModelFromFactureId(const QString & factureid)
+{
+    QString facture = getFactureOfId(factureid);
+    QStringList listofrows;
+    listofrows = facture.split(m_rowseparator);
+    FactureModel * model = new FactureModel(this);
+    foreach(QString rowstring,listofrows)
+    {
+        if (!rowstring.isEmpty())
+        {
+            int rows = model->rowCount();
+            QStringList linelist;
+            linelist = rowstring.split(m_fieldseparator);
+            if (!model->insertRows(rows,1))
+            {
+                qWarning() << __FILE__ << QString::number(__LINE__) << model->lastError().text() ;
+                }
+            for (int col = 0 ; col < FacturationHeadersModel_MaxParam;  ++col )
+            {
+                if (!model->setData(model->index(rows,col),linelist[col],Qt::EditRole))
+                {
+                    qWarning() << __FILE__ << QString::number(__LINE__) << model->lastError().text() ;
+                    }
+                }
+            }
+        }
+    if (!model->submit())
+    {
+          qWarning() << __FILE__ << QString::number(__LINE__) << model->lastError().text() ;
+        }
+    return model;
+}
+
+bool FacturationIO::recordValidatesActsInHonoraires(FactureModel *model,const QString programName)
+{
+    qDebug() << __FILE__ << QString::number(__LINE__) << " programName =" << programName ;
+    QSqlTableModel modelhonoraires(this,m_db);
+    modelhonoraires.setTable(TABLE_HONORAIRES);
+    modelhonoraires.select();
+    Iotools io(this);
+    qDebug() << __FILE__ << QString::number(__LINE__);
+
+    qDebug() << __FILE__ << QString::number(__LINE__);
+    for (int row = 0; row < model->rowCount(); ++row )
+    {
+        QString statut = model->data(model->index(row,STATUT),Qt::DisplayRole).toString();
+        if (statut == RECORDED || statut == NO_VALIDATED)
+        {
+              continue;
+            }
+        QString guidfromname = io.getGuidFromName(model->data(model->index(row,PATIENT),Qt::DisplayRole).toString(),programName);
+        if (!io.isReturnedTrue())
+        {
+            qWarning() << __FILE__ << QString::number(__LINE__) << "Iotools return false" ;
+            return false;
+            }
+        if (!insertIntoHonoraires(io.getIdFromUserLogin(model->data(model->index(row,PRATICIEN),Qt::DisplayRole).toString()),
+                                  io.getIdFromSiteLogin(model->data(model->index(row,SITE),Qt::DisplayRole).toString()),
+                                  io.getIdFromPayeurLogin(model->data(model->index(row,PAYEUR),Qt::DisplayRole).toString()),
+                                  model->data(model->index(row,PATIENT),Qt::DisplayRole).toString(),
+                                  guidfromname, 
+                                  model->data(model->index(row,PRATICIEN),Qt::DisplayRole).toString(), 
+                                  model->data(model->index(row,DATE_PAIEMENT),Qt::DisplayRole).toString(), 
+                                  model->data(model->index(row,PRESTATION),Qt::DisplayRole).toString(),
+                                  model->data(model->index(row,MODE_PAIEMENT),Qt::DisplayRole).toString() , 
+                                  model->data(model->index(row,VALEUR),Qt::DisplayRole).toString())) 
+        {
+              qWarning() << __FILE__ << QString::number(__LINE__) << "Unable to insert values in honoraires." ;
+              return false;
+            }
+        }
+    qDebug() << __FILE__ << QString::number(__LINE__);
+    return true;
+}
+
+bool FacturationIO::insertIntoHonoraires(QString  idusr, QString  idsite, QString  idpayeur, QString  nomprenom,
+                                   QString  guid,  QString  praticien,  QString  date,  QString  act,
+                                  QString payment , QString value)
+{
+    QString espece,cheque,cartebleue,virement = "0" ;
+    int typePayment = payment.split(":")[0].toInt();
+    switch(typePayment){
+        case CASH :
+            espece = value;
+            break;
+        case CHECK :
+            cheque =  value;
+            break;
+        case CREDIT_CARD :
+            cartebleue =  value;
+            break;
+        case BANKING :
+            virement =  value;
+            break;
+        default :
+            break;
+        }
+    QString reqAct = "INSERT INTO honoraires "
+                     " (id_usr,id_drtux_usr,id_site,id_payeurs,patient,GUID,praticien,date,acte,remarque,esp,chq,cb,vir,daf,autre,du,valide)"
+	               "VALUES ("
+	               ""+idusr+","
+	               ""+QString::number(0)+","
+	               "'"+idsite+"',"
+	               "'"+idpayeur+"',"
+	               "'"+nomprenom+"',"
+	               "'"+guid+"',"
+	               "'"+praticien+"',"
+	               "'"+date+"',"
+	               "'"+act+"',"
+	               "NULL,"
+	               "'"+espece+"',"
+	               "'"+cheque+"',"
+	               "'"+cartebleue+"',"
+	               "'"+virement+"',"
+	               ""+QString::number(0)+","
+	               ""+QString::number(0)+","
+	               ""+QString::number(0)+","
+	               "0)";
+    QSqlQuery qy(m_db);
+    if (!qy.exec(reqAct))
+    {
+          qWarning() << __FILE__ << QString::number(__LINE__) << qy.lastError().text() ;
+          qDebug() << __FILE__ << QString::number(__LINE__) << qy.lastQuery()  ;
+          return false;
+        }
+    return true;
+}
+
+
+/*QVariant FacturationIO::insertNewUser(int rowinbill,int rowfacturation, const QString & iduser)
+{
+
+    return QVariant(listuserofrow);
+}*/
+
+/*QVariant FacturationIO::insertDate(int dateenum , int rowfacture, int rowfacturation, const QString & date)
+{
+
+    return result;
+}*/
+
+

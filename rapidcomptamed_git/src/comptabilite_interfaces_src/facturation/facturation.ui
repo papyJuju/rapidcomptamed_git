@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FacturationWidget</class>
+ <widget class="QWidget" name="FacturationWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>748</width>
+    <height>528</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Facturation</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="listFactureLabel">
+     <property name="text">
+      <string>Liste des factures</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QComboBox" name="listFacturesIdComboBox"/>
+   </item>
+   <item row="0" column="3" colspan="4">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>323</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="newButton">
+     <property name="text">
+      <string>Nouvelle facture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="eraseButton">
+     <property name="text">
+      <string>Effacer la facture</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="nameLabel">
+     <property name="text">
+      <string>Nom</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QLineEdit" name="nameEdit"/>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLabel" name="prenomLabel">
+     <property name="text">
+      <string>Prénom</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4">
+    <widget class="QLineEdit" name="firstnameEdit"/>
+   </item>
+   <item row="2" column="5">
+    <widget class="QLabel" name="datepaiementLabel">
+     <property name="text">
+      <string>Date</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="6">
+    <widget class="QDateEdit" name="dateEdit"/>
+   </item>
+   <item row="3" column="0" colspan="7">
+    <widget class="QTableView" name="tableView"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="addButton">
+     <property name="text">
+      <string>Ajouter une ligne</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QPushButton" name="deleteButton">
+     <property name="text">
+      <string>Effacer une ligne</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QPushButton" name="printButton">
+     <property name="text">
+      <string>Im&amp;primer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3" colspan="2">
+    <widget class="QPushButton" name="recordButton">
+     <property name="text">
+      <string>Enregistre</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="5" colspan="2">
+    <widget class="QPushButton" name="quitButton">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>quit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3" colspan="3">
+    <widget class="QLabel" name="labelAlpha">
+     <property name="styleSheet">
+      <string notr="true">color: rgb(255, 0, 0);</string>
+     </property>
+     <property name="text">
+      <string>Cette partie est en stade alpha.
+Uniquement pour les testeurs.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>listFacturesIdComboBox</tabstop>
+  <tabstop>newButton</tabstop>
+  <tabstop>eraseButton</tabstop>
+  <tabstop>nameEdit</tabstop>
+  <tabstop>firstnameEdit</tabstop>
+  <tabstop>dateEdit</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>deleteButton</tabstop>
+  <tabstop>recordButton</tabstop>
+  <tabstop>quitButton</tabstop>
+  <tabstop>tableView</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

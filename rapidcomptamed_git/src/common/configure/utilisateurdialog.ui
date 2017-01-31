@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UtilisateursDialog</class>
+ <widget class="QWidget" name="UtilisateursDialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>653</width>
+    <height>373</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Configuration des paramètres de l'utilisateur.</string>
+  </property>
+  <layout class="QGridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout">
+     <item>
+      <layout class="QGridLayout">
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Solde initial</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>Nom de la Banque</string>
+         </property>
+         <property name="buddy">
+          <cstring>comboBankName</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="loginEdit"/>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="soldeEdit"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Nom user</string>
+         </property>
+         <property name="buddy">
+          <cstring>comboUserName</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="comboUserName"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Login</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Password</string>
+         </property>
+         <property name="buddy">
+          <cstring>passwdEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="passwdEdit"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Libellé du compte
+bancaire</string>
+         </property>
+         <property name="buddy">
+          <cstring>comboLibelle</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QCheckBox" name="verrouCheckBox">
+         <property name="text">
+          <string>Verrou</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" colspan="2">
+        <widget class="QComboBox" name="comboBankName"/>
+       </item>
+       <item row="3" column="1" colspan="2">
+        <widget class="QComboBox" name="comboLibelle"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>code banque</string>
+         </property>
+         <property name="buddy">
+          <cstring>codeBankEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>code guichet</string>
+         </property>
+         <property name="buddy">
+          <cstring>guichetEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>numéro de compte</string>
+         </property>
+         <property name="buddy">
+          <cstring>ribCompteEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="label_10">
+         <property name="text">
+          <string>clé</string>
+         </property>
+         <property name="buddy">
+          <cstring>cleEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLineEdit" name="codeBankEdit"/>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="guichetEdit"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLineEdit" name="ribCompteEdit"/>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="cleEdit"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout">
+       <item>
+        <widget class="QPushButton" name="newButton">
+         <property name="text">
+          <string>&amp;Nouveau</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="modifierButton">
+         <property name="text">
+          <string>&amp;Modifier</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="recordButton">
+         <property name="text">
+          <string>&amp;Enregistrer</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="removeButton">
+         <property name="text">
+          <string>Effa&amp;cer</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="choosePrefButton">
+         <property name="text">
+          <string>Choisir 
+comme &amp;préférentiel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="quitButton">
+         <property name="text">
+          <string>&amp;Quitter</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>comboUserName</tabstop>
+  <tabstop>loginEdit</tabstop>
+  <tabstop>passwdEdit</tabstop>
+  <tabstop>comboLibelle</tabstop>
+  <tabstop>soldeEdit</tabstop>
+  <tabstop>comboBankName</tabstop>
+  <tabstop>codeBankEdit</tabstop>
+  <tabstop>guichetEdit</tabstop>
+  <tabstop>ribCompteEdit</tabstop>
+  <tabstop>cleEdit</tabstop>
+  <tabstop>removeButton</tabstop>
+  <tabstop>choosePrefButton</tabstop>
+  <tabstop>quitButton</tabstop>
+  <tabstop>recordButton</tabstop>
+  <tabstop>modifierButton</tabstop>
+  <tabstop>newButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

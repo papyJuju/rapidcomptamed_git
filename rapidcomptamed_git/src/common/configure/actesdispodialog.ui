@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ActesdispoDialog</class>
+ <widget class="QWidget" name="ActesdispoDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>536</width>
+    <height>318</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Saisir ou modifier des actes  dans la base.</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="1" colspan="2">
+    <widget class="QComboBox" name="actsComboBox">
+     <property name="minimumSize">
+      <size>
+       <width>321</width>
+       <height>27</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
+     <property name="minimumSize">
+      <size>
+       <width>141</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Code de l'acte</string>
+     </property>
+     <property name="buddy">
+      <cstring>codeEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QLineEdit" name="codeEdit">
+     <property name="minimumSize">
+      <size>
+       <width>321</width>
+       <height>27</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="minimumSize">
+      <size>
+       <width>141</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Description</string>
+     </property>
+     <property name="buddy">
+      <cstring>descriptionEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QLineEdit" name="descriptionEdit">
+     <property name="minimumSize">
+      <size>
+       <width>321</width>
+       <height>27</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="minimumSize">
+      <size>
+       <width>141</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Actes</string>
+     </property>
+     <property name="buddy">
+      <cstring>actsComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="modeEdit"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="minimumSize">
+      <size>
+       <width>141</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Type d'acte</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="minimumSize">
+      <size>
+       <width>141</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Valeur totale</string>
+     </property>
+     <property name="buddy">
+      <cstring>totalValueEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="2">
+    <widget class="QLineEdit" name="totalValueEdit">
+     <property name="minimumSize">
+      <size>
+       <width>321</width>
+       <height>27</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="minimumSize">
+      <size>
+       <width>141</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Valeur tiers</string>
+     </property>
+     <property name="buddy">
+      <cstring>partialValueEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="2">
+    <widget class="QLineEdit" name="partialValueEdit">
+     <property name="minimumSize">
+      <size>
+       <width>321</width>
+       <height>27</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="dateLabel">
+     <property name="minimumSize">
+      <size>
+       <width>141</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Date effet</string>
+     </property>
+     <property name="buddy">
+      <cstring>dateEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QDateEdit" name="dateEdit"/>
+   </item>
+   <item row="9" column="0" colspan="3">
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QPushButton" name="addButton">
+       <property name="text">
+        <string>&amp;Nouveau</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="deleteButton">
+       <property name="text">
+        <string>E&amp;ffacer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="recordButton">
+       <property name="text">
+        <string>Enregi&amp;strer</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="quitButton">
+       <property name="text">
+        <string>&amp;Quitter</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="tableComboBox">
+     <property name="minimumSize">
+      <size>
+       <width>321</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="typeLabel">
+     <property name="text">
+      <string>Table</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

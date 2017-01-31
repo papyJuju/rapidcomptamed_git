@@ -1,0 +1,9 @@
+Pour intégrer la CCAM d'Ameli dans la base de données, il faut :
+- récupérer le fichier CCAM_Vxx.xls (dernière version) sur le site d'Ameli par l'item du menu "Trouver la CCAM".
+- Le sauver dans rapidcomptamed/resources/ameli/
+- Ouvrir le fichier rapidcomptamed/resources/ameli/CCAM_Vxx.xls par LibreOffice (Open Office), logiciel libre.
+- Le sauver dans un format exploitable par "save as" et choisir format .csv , 
+  dans le dossier rapidcomptamed/resources/ameli/
+- On recherche ce fichier .csv par le bouton "Rechercher le fichier CCAM_Vxx.csv", on le surligne, on fait Ok.
+- On appuie sur le bouton suivant "Créer la base CCAM".
+- Une fois terminé, on quitte.

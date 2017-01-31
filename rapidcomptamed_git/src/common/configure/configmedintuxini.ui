@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ConfigMedintuxIniWidget</class>
+ <widget class="QWidget" name="ConfigMedintuxIniWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>586</width>
+    <height>274</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Configurer le fichier de liaison avecMedintux</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="1" colspan="3">
+      <widget class="QLineEdit" name="medintuxBaseEdit"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="baseLabel">
+       <property name="text">
+        <string>medintux_base</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="hostLabel">
+       <property name="text">
+        <string>Host</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="3">
+      <widget class="QLineEdit" name="loginEdit"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="portLabel">
+       <property name="text">
+        <string>Port</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="loginLabel">
+       <property name="text">
+        <string>Login</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="3">
+      <widget class="QLineEdit" name="passEdit"/>
+     </item>
+     <item row="5" column="1" colspan="3">
+      <widget class="QLineEdit" name="driverEdit"/>
+     </item>
+     <item row="3" column="1" colspan="3">
+      <widget class="QLineEdit" name="portEdit"/>
+     </item>
+     <item row="7" column="2">
+      <widget class="QPushButton" name="quitButton">
+       <property name="text">
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="driverLabel">
+       <property name="text">
+        <string>Driver</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="passLabel">
+       <property name="text">
+        <string>Password</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="medintuxIndexLabel">
+       <property name="text">
+        <string>Table index</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1" colspan="3">
+      <widget class="QLineEdit" name="medintuxTableIndexEdit"/>
+     </item>
+     <item row="7" column="0" colspan="2">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>248</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="7" column="3">
+      <widget class="QPushButton" name="recordButton">
+       <property name="text">
+        <string>Enregistre</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="3">
+      <widget class="QLineEdit" name="hostEdit"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

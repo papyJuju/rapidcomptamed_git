@@ -1,0 +1,31 @@
+<!DOCTYPE CMenu><CMenu version="0.0" stdsetdef="1">
+<actions>
+    <action>
+        <property name="name">
+            <cstring>Acces_Compta</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>comptabilite.png</iconset>
+        </property>
+        <property name="text">
+            <string>Acces comptabilité</string>
+        </property>
+        <property name="menuText">
+            <string>Acces &amp;Compta</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+B</string>
+        </property>
+        <property name="script">
+            <string>{{[Execute]
+pathPlugin=../../rapidcomptamed/bin/comptatriee
+maskExch=
+pathIni=****
+waitEnd=n
+[Parametres]
+arg = --ProgramName=Medintux ;--patientname={{NOM PATIENT}} ;--patientfirstname={{PRENOM PATIENT}}; --dateofbirth={{DATE NAISSANCE PATIENT}}
+}}</string>
+        </property>
+    </action>
+</actions>
+</CMenu>

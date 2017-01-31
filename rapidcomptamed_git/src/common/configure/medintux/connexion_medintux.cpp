@@ -1,0 +1,162 @@
+/***************************************************************************
+ *   Copyright (C) 2008 by Dr Pierre-Marie DESOMBRE   *
+ *   pm.desombre@medsyn.fr   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+#include "connexion_medintux.h"
+#include "constants_medintux.h"
+#include "../mdp.h"
+
+
+#include <QSettings>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QSqlDatabase>
+#include <QApplication>
+#include <QDebug>
+#include <QMessageBox>
+#include <QSqlError>
+
+
+bool WarnDebugMessage = true;
+using namespace MedintuxConnexionSpace;
+using namespace ConstantsMedintuxSpace;
+
+static inline QString applicationResourcesPath()
+{
+#ifdef DEBUG
+#  ifdef Q_OS_MAC
+    return QDir::cleanPath(qApp->applicationDirPath() + "/../../../../resources");
+#  else
+    return QDir::cleanPath(qApp->applicationDirPath() + "/../resources");
+#  endif
+#endif
+
+    // In release mode, returns the installed resources path
+#ifdef RELEASE
+#  ifdef Q_OS_MAC
+    return QDir::cleanPath(qApp->applicationDirPath() + "/../resources");
+#  else
+    return qApp->applicationDirPath() + "/../resources";
+#  endif
+#endif
+}
+
+static inline  QSettings *settings() 
+{
+    QFile fileini(QDir::homePath()+"/.rapidcomptamednew/config_medintux.ini");
+    QFileInfo fileiniinfo(fileini);    
+    if (!fileini.exists())
+    {
+          QFile initialConfig(applicationResourcesPath()+"/config/config_medintux.ini");
+          if (!initialConfig.copy(fileiniinfo.absoluteFilePath()))
+          {
+                qWarning() << __FILE__ << QString::number(__LINE__) << "unable to copy " << fileini.fileName() ;
+                }
+        }
+    QSettings *set = new QSettings(fileini.fileName(),QSettings::IniFormat);
+    return set;
+ }
+
+ConnexionMedintux::ConnexionMedintux(QObject *parent) :
+        QObject(parent),
+        m_IsDBConfigured(false)
+{
+    m_base   = settings()->value(DRTUXBASE).toString();qDebug() << __FILE__ << QString::number(__LINE__) << " firsttime =" << settings()->value(FIRSTTIME).toString() ;
+    if (settings()->value(FIRSTTIME).toString()=="true")
+    {qDebug() << __FILE__ << QString::number(__LINE__);
+          manageSettingsForMysql();//FIXME
+          settings()->setValue(FIRSTTIME,"false");
+        }
+}
+
+ConnexionMedintux::~ConnexionMedintux()
+{}
+
+bool ConnexionMedintux::connectToDrTux(){
+    
+    QString log    = settings()->value(DRTUX_LOGIN).toString();
+    QString pass   = settings()->value(DRTUX_PASSWORD).toString();
+    QString host   = settings()->value(DRTUX_HOST).toString();
+    int port   = settings()->value(DRTUX_PORT).toInt();
+    QString driver = settings()->value(DRTUX_DRIVER).toString();
+    //--------------------------------------
+    bool dbTest;
+    QSqlDatabase db;
+    db = QSqlDatabase::addDatabase(driver, m_base);
+    db.setHostName(host);
+    db.setDatabaseName(m_base);
+    db.setUserName(log);
+    db.setPassword(pass);
+    db.setPort(port);
+    if (WarnDebugMessage){
+        qWarning() << "Connecting DrTux database" << host << m_base << log << pass << port;
+        }
+    dbTest = (!db.isOpen()) && (!db.open());
+    if (!dbTest) 
+    {
+        if (WarnDebugMessage)
+        {
+            qWarning() << "Connected to DrTux database"
+                           << db.databaseName()
+                           << __FILE__
+                           << QString::number(__LINE__);
+            }
+        }
+    else {
+         QMessageBox::warning(0,tr("Warning"),tr("Impossible d'ouvrir la table DrTuxTest :")+db.lastError().text(),QMessageBox::Ok);
+         //FIXME
+         return false;
+         }
+    return true;
+}
+
+void ConnexionMedintux::manageSettingsForMysql()
+{
+     mdp * databaseData = new mdp;
+     if(databaseData->exec() == QDialog::Accepted) {
+         QString pass = databaseData->mdpPassword();qDebug() << __FILE__ << QString::number(__LINE__) << " pass =" << pass ;
+         settings()->setValue(DRTUX_LOGIN, databaseData->mdpLogin());
+         settings()->setValue(DRTUX_HOST,  databaseData->mdpHost());
+         settings()->setValue(DRTUX_PORT,  databaseData->mdpPort());
+         settings()->setValue(DRTUX_PASSWORD,pass);
+         }
+}
+
+QString ConnexionMedintux::medintuxbasename()
+{
+    return m_base;
+}
+
+QString ConnexionMedintux::medintuxhost()
+{
+   return settings()->value(DRTUX_HOST).toString();
+}
+        
+QString ConnexionMedintux::medintuxlogin()
+{
+   return settings()->value(DRTUX_LOGIN).toString();
+}
+QString ConnexionMedintux::medintuxpassword()
+{
+   return settings()->value(DRTUX_PASSWORD).toString();
+}
+QString ConnexionMedintux::medintuxport()
+{
+   return settings()->value(DRTUX_PORT).toString();
+}

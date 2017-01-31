@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DepenseDialog</class>
+ <widget class="QWidget" name="DepenseDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>850</width>
+    <height>555</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>750</width>
+    <height>540</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Depenses</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Mouvement positifs
+et négatifs</string>
+         </property>
+         <property name="buddy">
+          <cstring>movementsComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="movementsComboBox">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>26</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>148</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="3">
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Utilisateur</string>
+           </property>
+           <property name="buddy">
+            <cstring>comboBoxLogins</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="comboBoxLogins">
+           <property name="minimumSize">
+            <size>
+             <width>80</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="4" rowspan="2" colspan="2">
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="minimumSize">
+          <size>
+           <width>41</width>
+           <height>31</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>?</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5" rowspan="2" colspan="2">
+        <widget class="QComboBox" name="bankComboBox">
+         <property name="minimumSize">
+          <size>
+           <width>151</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="minimumSize">
+          <size>
+           <width>151</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Valeur</string>
+         </property>
+         <property name="buddy">
+          <cstring>lineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="lineEdit">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>30</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>178</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="3">
+        <widget class="QLabel" name="label_7">
+         <property name="minimumSize">
+          <size>
+           <width>131</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Compte bancaire</string>
+         </property>
+         <property name="buddy">
+          <cstring>bankComboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="label_6">
+         <property name="minimumSize">
+          <size>
+           <width>101</width>
+           <height>21</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Détail</string>
+         </property>
+         <property name="buddy">
+          <cstring>detailEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" colspan="2">
+        <widget class="QLineEdit" name="detailEdit">
+         <property name="minimumSize">
+          <size>
+           <width>311</width>
+           <height>27</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Date saisie</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QDateEdit" name="dateEdit">
+         <property name="maximumSize">
+          <size>
+           <width>109</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="displayFormat">
+          <string>dd/MM/yyyy</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Pourcentage</string>
+           </property>
+           <property name="buddy">
+            <cstring>percentageComboBox</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="percentageComboBox"/>
+         </item>
+        </layout>
+       </item>
+       <item row="4" column="3">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="4" colspan="3">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="3">
+        <widget class="QLabel" name="yearLabel">
+         <property name="text">
+          <string>Année</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="5" colspan="2">
+        <widget class="QComboBox" name="yearComboBox"/>
+       </item>
+       <item row="0" column="6">
+        <widget class="QPushButton" name="errorButton">
+         <property name="text">
+          <string>Log erreur</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QDateEdit" name="bankingtransactiondateEdit">
+         <property name="maximumSize">
+          <size>
+           <width>109</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="bankingtransactionlabel">
+         <property name="text">
+          <string>Date opération</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <widget class="QTableView" name="tableView"/>
+     </item>
+     <item row="4" column="0">
+      <layout class="QHBoxLayout">
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="minimumSize">
+          <size>
+           <width>181</width>
+           <height>155</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>Mode de règlement</string>
+         </property>
+         <widget class="QWidget" name="layoutWidget">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>172</width>
+            <height>126</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout">
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="especes">
+             <property name="text">
+              <string>&amp;espèce</string>
+             </property>
+             <property name="autoExclusive">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="cheque">
+             <property name="text">
+              <string>c&amp;hèque</string>
+             </property>
+             <property name="autoExclusive">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="carte_bancaire">
+             <property name="text">
+              <string>c&amp;b</string>
+             </property>
+             <property name="autoExclusive">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QCheckBox" name="prelevement_bancaire">
+             <property name="text">
+              <string>&amp;prélèvement bancaire</string>
+             </property>
+             <property name="autoExclusive">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QCheckBox" name="virement">
+             <property name="text">
+              <string>virement</string>
+             </property>
+             <property name="autoExclusive">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="minimumSize">
+          <size>
+           <width>181</width>
+           <height>151</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string> &amp;Enregistrer
+la dépense</string>
+         </property>
+         <property name="shortcut">
+          <string/>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout">
+         <item row="2" column="1">
+          <widget class="QPushButton" name="pushButton_3">
+           <property name="minimumSize">
+            <size>
+             <width>107</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>&amp;Effacer</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2">
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="3" column="1">
+          <widget class="QPushButton" name="valideFactureButton">
+           <property name="minimumSize">
+            <size>
+             <width>107</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string> &amp;Valider la dépense
+(facture)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1">
+          <widget class="QPushButton" name="pushButton_4">
+           <property name="minimumSize">
+            <size>
+             <width>110</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>&amp;Quitter</string>
+           </property>
+           <property name="shortcut">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3" rowspan="3">
+          <widget class="QPushButton" name="bankDebitButton">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>50</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Mouvement
+&amp;débité en banque</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="3">
+          <widget class="QPushButton" name="analyseButton">
+           <property name="text">
+            <string>&amp;Analyser</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QCheckBox" name="factureBox">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>21</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Facture reçue</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="totauxLabel">
+           <property name="text">
+            <string>Totaux dépenses</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="sumLabel">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>TextLabel</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

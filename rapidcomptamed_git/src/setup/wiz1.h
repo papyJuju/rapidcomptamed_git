@@ -1,0 +1,20 @@
+#ifndef WIZ1_H
+#define WIZ1_H
+
+#include <QtGui>
+#include <QtCore>
+
+
+class wiz1 : public QWizard
+{
+    Q_OBJECT
+    public :
+        wiz1();
+        ~wiz1();
+        bool returnfalse();
+        void setfalse(bool result);
+    private:
+        bool m_result;
+};
+
+#endif

@@ -1,0 +1,6 @@
+http://www.economie.gouv.fr/dgfip/outil-test-des-fichiers-des-ecritures-comptables-fec
+
+enregistrer le FEC sous un nom prédéfini : Siren de l'entreprise + FEC + date de fin d'exercice au format AAAAMMJJ (123456789FEC20141231 par exemple)
+
+
+

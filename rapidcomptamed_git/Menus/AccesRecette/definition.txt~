@@ -1,0 +1,25 @@
+<!DOCTYPE CMenu><CMenu version="0.0" stdsetdef="1">
+<actions>
+    <action>
+        <property name="name">
+            <cstring>Acces_Recette</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>recette.png</iconset>
+        </property>
+        <property name="text">
+            <string>Acces recettes</string>
+        </property>
+        <property name="menuText">
+            <string>Acces &amp;Recette</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+r</string>
+        </property>
+        <property name="script">
+            <string>{{::exe_process(,../../rapidcomptamed/bin/recettedialog,--ProgramName=Medintux,--patientname={{NOM PATIENT}},--patientfirstname={{PRENOM PATIENT}})}}
+</string>
+        </property>
+    </action>
+</actions>
+</CMenu>

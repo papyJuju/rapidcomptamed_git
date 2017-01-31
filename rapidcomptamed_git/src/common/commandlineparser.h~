@@ -1,0 +1,182 @@
+/***************************************************************************
+ *   Copyright (C) 2009 by Eric MAEKER                                     *
+ *   eric.maeker@free.fr                                                   *
+ *   All rights reserved.                                                  *
+ *                                                                         *
+ *   Redistribution and use in source and binary forms, with or without    *
+ *   modification, are permitted provided that the following conditions    *
+ *   are met:                                                              *
+ *   - Redistributions of source code must retain the above copyright      *
+ *   notice, this list of conditions and the following disclaimer.         *
+ *   - Redistributions in binary form must reproduce the above copyright   *
+ *   notice, this list of conditions and the following disclaimer in the   *
+ *   documentation and/or other materials provided with the distribution.  *
+ *   - Neither the name of the FreeMedForms' organization nor the names of *
+ *   its contributors may be used to endorse or promote products derived   *
+ *   from this software without specific prior written permission.         *
+ *                                                                         *
+ *   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS   *
+ *   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT     *
+ *   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS     *
+ *   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE        *
+ *   COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,  *
+ *   INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,  *
+ *   BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;      *
+ *   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER      *
+ *   CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT    *
+ *   LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN     *
+ *   ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE       *
+ *   POSSIBILITY OF SUCH DAMAGE.                                           *
+ ***************************************************************************/
+#ifndef COMMON_COMMANDLINEPARSER_H
+#define COMMON_COMMANDLINEPARSER_H
+#include <common/xmlparser.h>
+#include <QHash>
+#include <QString>
+#include <QApplication>
+#include <QStringList>
+
+namespace Common {
+
+/**
+  \brief Small command line parser. User the \e Param enum to get values of command line params.
+*/
+class CommandLine
+{
+    enum MedinTuxInputs
+    {
+        PROGRAM_NAME=0,
+        PATIENT_NAME,
+        PATIENT_FIRSTNAME,
+        PATIENT_DATEOFBIRTH
+    };
+    public:
+
+    enum Param {
+        CL_ProgramName = 0,
+        CL_ExchangeFile,
+        CL_PatientName,
+        CL_PatientFirstName,
+        CL_DateOfBirth,
+        CL_PatientUUID,
+        CL_Price,
+        CL_PriceCode,
+        CL_CallingProgramUser,
+        CL_MaxParam,
+        CL_Version
+    };
+
+    CommandLine()
+    {
+        ref.insert(CL_ProgramName, "--ProgramName");
+        ref.insert(CL_ExchangeFile, "--exchange");
+        ref.insert(CL_PatientName, "--patientname");
+        ref.insert(CL_PatientFirstName, "--patientfirstname");
+        ref.insert(CL_DateOfBirth, "--dateofbirth");
+        ref.insert(CL_PatientUUID, "--patientuuid");
+        ref.insert(CL_Price,"--price");
+        ref.insert(CL_PriceCode,"--pricecode");
+        ref.insert(CL_CallingProgramUser,"--user");
+        ref.insert(CL_MaxParam,"--params");
+        ref.insert(CL_Version,"--version");
+        QStringList args = qApp->arguments();
+        int countArgs = args.size();
+        if(countArgs == 14)
+        {
+            QString GUID_Patient = qApp->arguments()[4];
+            QString argsOfMedintux = qApp->arguments()[13];
+            QStringList argsOfMedintuxList = argsOfMedintux.split(";");
+            QStringList list ;
+            list.append( argsOfMedintuxList[PROGRAM_NAME]);
+            list.append( argsOfMedintuxList[PATIENT_NAME]);
+            list.append( argsOfMedintuxList[PATIENT_FIRSTNAME]);
+            list.append( argsOfMedintuxList[PATIENT_DATEOFBIRTH]);
+            list.append( "--patientuuid="+GUID_Patient);
+
+            args = list;
+
+        }
+
+        if(countArgs < 2){
+            qWarning() << __FILE__ << QString::number(__LINE__) << " in countArgs < 2" ;
+            QHash<QString,QString> hashList;
+            XmlParser *xml = new XmlParser;
+            hashList       = xml->readXmlFile();
+            if(hashList.count()>0){
+            params.insert(CL_ProgramName, hashList.value("programName"));//calling program, key = xml tag
+            params.insert(CL_PatientName, hashList.value("name")); //name, key = xml tag
+            params.insert(CL_PatientFirstName,hashList.value("firstname")); //firstname, key = xml tag
+            params.insert(CL_DateOfBirth,hashList.value("dateofbirth"));
+            params.insert(CL_PatientUUID, hashList.value("uid"));
+            params.insert(CL_Price, hashList.value("price")); //price , from EMR, key = xml tag
+            params.insert(CL_PriceCode, hashList.value("priceCode")); //price code, from EMR, key = xml tag
+            params.insert(CL_CallingProgramUser, hashList.value("user"));//user of calling program
+            params.insert(CL_MaxParam, hashList.value("otherparams"));//a string of other params if necessary
+            params.insert(CL_Version, hashList.value("version"));//version of accountancy program
+            }
+       //qDebug() << programName+"\n"+nomRecupere+"\n"+ prenomRecupere +"\n"+guidEntre+"\n"+ tarif +"\n"+codeTarif+"\n"+user;
+            qDebug() << __FILE__ << QString::number(__LINE__);
+            xml->purgeXmlFile();qDebug() << __FILE__ << QString::number(__LINE__);
+            delete xml;
+            }
+        else{
+          foreach(const QString a, args) {
+            QString k = a;
+            qDebug() << __FILE__ << QString::number(__LINE__) << " k = "+k;
+            if (k.contains(" "))
+                k = k.left(k.indexOf(" "));
+            if (a.contains("="))
+                k = k.left(k.indexOf("="));
+            QString strForInsert = a.mid(a.indexOf("=")+1).remove("\"").trimmed();
+            if(a.contains(" ")){
+                strForInsert.replace(" ","_");
+                }
+            qDebug() << __FILE__ << QString::number(__LINE__) << " strForInsert = "+strForInsert;
+            switch (ref.key(k,-1))
+            {
+                case CL_ProgramName : params.insert(CL_ProgramName,strForInsert ); break;
+                case CL_ExchangeFile : params.insert(CL_ExchangeFile, strForInsert); break;
+                case CL_PatientName : params.insert(CL_PatientName, strForInsert); break;
+                case CL_PatientFirstName : params.insert(CL_PatientFirstName, strForInsert); break;
+                case CL_DateOfBirth : params.insert(CL_DateOfBirth,strForInsert); break;
+                case CL_PatientUUID : params.insert(CL_PatientUUID, strForInsert); break;
+                case CL_Price : params.insert(CL_Price, strForInsert); break;
+                case CL_PriceCode : params.insert(CL_PriceCode, strForInsert); break;
+                case CL_CallingProgramUser : params.insert(CL_CallingProgramUser, strForInsert); break;
+                case CL_MaxParam : params.insert(CL_MaxParam, strForInsert); break;
+                case CL_Version : params.insert(CL_Version, strForInsert); break;
+                default : break;
+            }
+        }
+        }
+    }
+
+    QVariant value(int param, const QVariant &defaultValue = QVariant()) const
+    {
+        return params.value(param, defaultValue);
+    }
+
+
+
+    QString paramName(int param) const
+    {
+        if (ref.keys().contains(param))
+            return ref.value(param);
+        else
+            return QString::number(param);
+    }
+
+    void setValue(int param,QVariant newValue){
+        params.insert(param,newValue);
+
+    }
+
+
+private:
+    QHash<int,QVariant> params;
+    QHash<int, QString> ref;
+};
+
+}  // End namespace Common
+
+#endif // COMMON_COMMANDLINEPARSER_H

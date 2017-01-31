@@ -1,0 +1,24 @@
+<!DOCTYPE CMenu><CMenu version="0.0" stdsetdef="1">
+<actions>
+    <action>
+        <property name="name">
+            <cstring>Acces_Depenses</cstring>
+        </property>
+        <property name="iconSet">
+            <iconset>creditcards.png</iconset>
+        </property>
+        <property name="text">
+            <string>Acces depenses</string>
+        </property>
+        <property name="menuText">
+            <string>Acces &amp;Depenses</string>
+        </property>
+        <property name="accel">
+            <string>Ctrl+d</string>
+        </property>
+        <property name="script">
+            <string>{{:: exe_process (,../../rapidcomptamed/bin/depensedialog)}}</string>
+        </property>
+    </action>
+</actions>
+</CMenu>

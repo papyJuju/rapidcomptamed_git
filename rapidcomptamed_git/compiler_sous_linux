@@ -1,0 +1,11 @@
+sous debian installer qt
+ouvrir un terminal
+su
+apt-get install qt-sdk
+sous ubuntu
+sudo apt-get install qt-sdk
+puis 
+cd chemin_vers/rapidcomptamed (devrait être dans le répertoire medintux/programmes)
+./Compil_comptaLin.sh
+
+

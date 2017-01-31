@@ -1,0 +1,134 @@
+<ui version="4.0" >
+ <class>EtatstriesDialog</class>
+ <widget class="QWidget" name="EtatstriesDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>998</width>
+    <height>652</height>
+   </rect>
+  </property>
+  <property name="minimumSize" >
+   <size>
+    <width>400</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="windowTitle" >
+   <string>Etats triés</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" colspan="5" >
+    <widget class="QTextEdit" name="textEdit" >
+     <property name="minimumSize" >
+      <size>
+       <width>300</width>
+       <height>400</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QComboBox" name="comboBox" >
+     <property name="minimumSize" >
+      <size>
+       <width>100</width>
+       <height>24</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" colspan="2" >
+    <widget class="QPushButton" name="pushButton" >
+     <property name="minimumSize" >
+      <size>
+       <width>100</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>&amp;Trier</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4" >
+    <widget class="QPushButton" name="pushButton_2" >
+     <property name="minimumSize" >
+      <size>
+       <width>100</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>&amp;Imprimer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QPushButton" name="pushButton_4" >
+     <property name="minimumSize" >
+      <size>
+       <width>151</width>
+       <height>27</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>Avancer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QPushButton" name="pushButton_5" >
+     <property name="minimumSize" >
+      <size>
+       <width>151</width>
+       <height>27</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>Reculer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QLabel" name="label_2" >
+     <property name="minimumSize" >
+      <size>
+       <width>131</width>
+       <height>21</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>Année</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3" >
+    <widget class="QDateEdit" name="dateEdit" >
+     <property name="minimumSize" >
+      <size>
+       <width>110</width>
+       <height>27</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="4" >
+    <widget class="QPushButton" name="pushButton_3" >
+     <property name="minimumSize" >
+      <size>
+       <width>100</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="text" >
+      <string>&amp;Quitter</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

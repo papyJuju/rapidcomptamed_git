@@ -1,0 +1,5 @@
+Pour integrer la CCAM il faut ouvrir le fichier .xls avec LibreOffice dans rapidecomptamed/resources/ameli,
+le sauver (save as) comme .csv dans le meme dossier avec comme delimiteur de champ le | (soit AltGr + touche 6) 
+et comme délimiteur de texte le "
+et code code unicode UTF8 .
+Ce sera ce .csv qu'on integrera par le logiciel.

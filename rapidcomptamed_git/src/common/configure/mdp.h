@@ -1,0 +1,23 @@
+#ifndef MDP_H
+#define MDP_H
+
+#include "ui_MdpDialog.h"
+#include <QWidget>
+#include <QDialog>
+#include <QString>
+
+
+class mdp : public QDialog, public Ui::MdpDialog
+{
+    Q_OBJECT
+    public :
+        mdp(QWidget *parent = 0);
+        ~mdp();
+        QString mdpLogin();
+        QString mdpPassword();
+        QString mdpHost();
+        QString mdpPort();
+        void disableEdits();
+};
+
+#endif

@@ -1,0 +1,205 @@
+#ifndef DELEGATE_H
+#define DELEGATE_H
+
+#include "nameindex.h"
+#include <ccam/findreceiptsvalues.h>
+#include <QStyledItemDelegate>
+#include <QPushButton>
+#include <QSqlDatabase>
+
+class ComboDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT    
+    public :
+    ComboDelegate(QObject * parent = 0,const QString & table = QString());
+    ~ComboDelegate();
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+
+    private :
+        QString m_table;
+};
+
+class ComboStatutPaymentDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT    
+    public :
+    ComboStatutPaymentDelegate(QObject * parent = 0);
+    ~ComboStatutPaymentDelegate();
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+
+    private :
+
+};
+
+class DateDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT    
+    public :
+    DateDelegate(QObject * parent = 0);
+    ~DateDelegate();
+
+    QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+    void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+};
+
+ class DoubleSpinBoxDelegate : public QStyledItemDelegate
+ {
+     Q_OBJECT
+
+ public:
+     DoubleSpinBoxDelegate(QObject *parent = 0);
+
+     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+
+     void setEditorData(QWidget *editor, const QModelIndex &index) const;
+     void setModelData(QWidget *editor, QAbstractItemModel *model,
+                       const QModelIndex &index) const;
+
+     void updateEditorGeometry(QWidget *editor,
+         const QStyleOptionViewItem &option, const QModelIndex &index) const;
+ };
+
+class ComboPayDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+    public :
+       ComboPayDelegate(QObject * parent = 0);
+       ~ComboPayDelegate();
+
+        QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+
+    private :
+        QHash<int,QString> m_hash;
+};
+
+class ComboUsersDelegate:public QStyledItemDelegate
+{
+    public:
+        ComboUsersDelegate(QObject * parent = 0,const QString & user = QString(),QSqlDatabase db = QSqlDatabase());
+        ~ComboUsersDelegate ();
+        QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    private:
+        QMap<QString,QString> getUsersFromDatabase(QSqlDatabase & db,const QString & iduser);
+        QMap<QString,QString> m_mapUsers;
+};  
+
+class  PrestationEdit : public QStyledItemDelegate
+{
+    Q_OBJECT
+    public :
+        PrestationEdit(QObject * parent = 0,QSqlDatabase db = QSqlDatabase());
+        ~PrestationEdit();
+        QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    private slots :
+        void showfindvalues();
+    private:
+        QString m_value;
+        FindReceiptsValues *m_f;
+        QPushButton *m_editor;
+}; 
+
+class  ButtonPatientDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+    public :
+        ButtonPatientDelegate(QObject * parent = 0,QSqlDatabase db = QSqlDatabase(), const QString & programname = QString());
+        ~ButtonPatientDelegate();
+        QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    private slots :
+        void shownameindex();
+    private:
+        QString m_names;
+        QPushButton *m_editor;
+        NamesDialog *m_nw;
+};  
+
+class ComboSitesDelegate:public QStyledItemDelegate
+{
+    public:
+        ComboSitesDelegate(QObject * parent = 0);
+        ~ComboSitesDelegate ();
+        QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                              const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    private:
+        QMap<QString,QString> getSitesFromDatabase();
+        QMap<QString,QString> m_mapSites;
+};
+
+class ComboPayeursDelegate:public QStyledItemDelegate
+{
+    public:
+        ComboPayeursDelegate(QObject * parent = 0);
+        ~ComboPayeursDelegate ();
+        QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                              const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+    private:
+        QMap<QString,QString> getPayeursFromDatabase();
+        QMap<QString,QString> m_mapPayeurs;
+};
+
+class ComboYesNoDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+    public :
+       ComboYesNoDelegate(QObject * parent = 0);
+       ~ComboYesNoDelegate();
+
+        QSize sizeHint(const QStyleOptionViewItem &option,
+                   const QModelIndex &index ) const;
+        QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+        void setEditorData(QWidget *editor, const QModelIndex &index) const;
+        void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+
+    private :
+        enum YesNoEnum {YES=0,NO};
+        QHash<int,QString> m_hash;
+};
+
+#endif
+

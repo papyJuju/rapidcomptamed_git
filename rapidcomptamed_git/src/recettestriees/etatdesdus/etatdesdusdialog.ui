@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EtatdesdusDialog</class>
+ <widget class="QWidget" name="EtatdesdusDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>643</width>
+    <height>525</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Gestion des dus</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0" colspan="2">
+      <widget class="QTextEdit" name="textEdit"/>
+     </item>
+     <item row="1" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Débiteur</string>
+         </property>
+         <property name="buddy">
+          <cstring>comboBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox"/>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="1" rowspan="2">
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="text">
+        <string>&amp;Trier</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Site</string>
+         </property>
+         <property name="buddy">
+          <cstring>comboBox_2</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_2"/>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Praticien</string>
+         </property>
+         <property name="buddy">
+          <cstring>comboBox_3</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_3"/>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="1" rowspan="2">
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Faire une &amp;lettre
+de rappel</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Du</string>
+         </property>
+         <property name="buddy">
+          <cstring>dateEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="dateEdit"/>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Au</string>
+         </property>
+         <property name="buddy">
+          <cstring>dateEdit_2</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDateEdit" name="dateEdit_2"/>
+       </item>
+      </layout>
+     </item>
+     <item row="5" column="1">
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>&amp;Quitter</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

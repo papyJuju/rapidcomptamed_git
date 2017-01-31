@@ -1,0 +1,226 @@
+#include "facturemodel.h"
+#include <common/settings.h>
+#include <common/icore.h>
+#include <common/constants.h>
+#include <common/tablesdiagrams.h>
+#include <QDebug>
+
+using namespace Common;
+using namespace Constants;
+using namespace TablesDiagramsMouvements;
+using namespace FacturationSpace;
+
+static inline Common::Settings *settings(){return Common::ICore::instance()->settings();}
+
+FactureModel::FactureModel(QObject * parent)
+{
+    Q_UNUSED(parent);
+    m_listsOfValuesbyRows = new QVector<QList<QVariant> >;
+    m_test = settings()->value(Constants::TEST).toBool();
+}
+
+FactureModel::~FactureModel(){}
+
+int FactureModel::rowCount(const QModelIndex &parent ) const 
+{
+        Q_UNUSED(parent);
+        return m_listsOfValuesbyRows->size();
+}
+
+int FactureModel::columnCount(const QModelIndex &parent) const 
+{
+        Q_UNUSED(parent);
+        return int(FacturationHeadersModel_MaxParam);
+}
+
+QModelIndex FactureModel::index ( int row, int column, const QModelIndex & parent) const
+{
+        return QAbstractTableModel::index(row,column,parent);
+}
+
+bool FactureModel::insertRows( int position, int count, const QModelIndex & parent)
+{
+        beginInsertRows(parent, position, position+count-1);
+        for (int row=0; row < count; row++) {
+
+            QList<QVariant> list;
+            for (int j = 0; j < FacturationHeadersModel_MaxParam; ++j)
+            {
+                list << QVariant("");
+                }
+            m_listsOfValuesbyRows -> append(list);
+            }
+        endInsertRows();
+        return true;
+
+}
+
+bool FactureModel::removeRows(int position, int count, const QModelIndex & parent)
+{
+        Q_UNUSED(parent);
+        beginRemoveRows(parent, position, position+count-1);
+        int rows = m_listsOfValuesbyRows->size();
+        for (int row=0; row < count; row++) {
+            m_listsOfValuesbyRows -> remove(rows - row -1);
+        }
+        endRemoveRows();
+        return true;
+}
+
+bool FactureModel::submit()
+{
+        return QAbstractTableModel::submit();
+}
+
+
+QVariant FactureModel::data(const QModelIndex &index, int role) const
+{
+        QVariant data;
+        if (!index.isValid()) {
+            if (m_test)
+                qWarning() << __FILE__ << QString::number(__LINE__) << "index not valid" ;
+            return QVariant();
+            }
+        if (role==Qt::EditRole || role==Qt::DisplayRole) {
+            int row = index.row();
+            const QList<QVariant> & valuesListByRow = m_listsOfValuesbyRows->at(row);
+            data = valuesListByRow[index.column()];
+            }
+        return data;
+}
+
+bool FactureModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+        bool ret = true;
+        if (!index.isValid()) {
+            if (m_test)
+                qWarning() << __FILE__ << QString::number(__LINE__) << "index not valid" ;
+            return false;
+        }
+
+        if (role==Qt::EditRole) {
+            QList<QVariant> list;
+            int row = index.row();
+            list = m_listsOfValuesbyRows->at(row);
+            switch(index.column()){
+            case PATIENT :
+                list.replace(PATIENT,value);
+                break;
+            case SITE :
+                list.replace(SITE,value);
+                break;
+            case PAYEUR :
+                list.replace(PAYEUR,value);
+                break;
+            case PRATICIEN :
+                list.replace(PRATICIEN,value);
+                break;
+            case DATE_OPERATION :
+                list.replace(DATE_OPERATION,value);
+                break;
+            case DATE_PAIEMENT :
+                list.replace(DATE_PAIEMENT,value);
+                break;
+            case FacturationSpace::DATE_VALEUR :
+                list.replace(FacturationSpace::DATE_VALEUR,value);
+                break;
+            case DATE_VALIDATION :
+                list.replace(DATE_VALIDATION,value);
+                break;
+            case PRESTATION :
+                list.replace(PRESTATION,value);
+                break;
+            case FacturationSpace::VALEUR :
+                list.replace(FacturationSpace::VALEUR,value);
+                break;
+            case MODE_PAIEMENT :
+                list.replace(MODE_PAIEMENT,value);
+                break;
+            case STATUT :
+                list.replace(STATUT,value);
+                break;
+            default :
+                break;
+            }
+            m_listsOfValuesbyRows->replace(row,list);
+            Q_EMIT dataChanged(index, index);
+            ret = true;
+        }
+        return ret;
+}
+
+QVariant FactureModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+        if (role==Qt::DisplayRole) {
+            if (orientation==Qt::Horizontal) {
+                switch (section) 
+                {
+                    case PATIENT: return m_headersColumns.value(PATIENT);
+                    case PRATICIEN: return m_headersColumns.value(PRATICIEN);
+                    case SITE : return m_headersColumns.value(SITE);
+                    case PAYEUR : return m_headersColumns.value(PAYEUR);
+                    case DATE_OPERATION: return m_headersColumns.value(DATE_OPERATION);
+                    case DATE_PAIEMENT: return m_headersColumns.value(DATE_PAIEMENT);
+                    case FacturationSpace::DATE_VALEUR : return m_headersColumns.value(FacturationSpace::DATE_VALEUR);
+                    case DATE_VALIDATION : return m_headersColumns.value(DATE_VALIDATION);
+                    case PRESTATION: return m_headersColumns.value(PRESTATION);
+                    case FacturationSpace::VALEUR: return m_headersColumns.value(FacturationSpace::VALEUR);
+                    case MODE_PAIEMENT: return m_headersColumns.value(MODE_PAIEMENT);
+                    case STATUT : return m_headersColumns.value(STATUT);
+                    }
+            }
+            else if (orientation==Qt::Vertical) {
+                return QVariant(QString::number(section));
+            }
+        }
+
+        return QVariant();
+}
+
+bool FactureModel::setHeaderData( int section, Qt::Orientation orientation, const QVariant & value, int role)
+{
+        if (role == Qt::EditRole||role == Qt::DisplayRole) {
+            if (orientation == Qt::Vertical) {
+                m_headersRows.insert(section,QString::number(section));
+                }
+            else if (orientation == Qt::Horizontal){
+                m_headersColumns.insert(section,value.toString());
+                }
+            }
+
+        else 
+        {
+            return false;
+            }
+
+        Q_EMIT QAbstractTableModel::headerDataChanged(orientation, section, section) ;
+        return true;
+}
+
+QSqlError FactureModel::lastError()
+{
+        return lastError();
+}
+
+Qt::ItemFlags FactureModel::flags(const QModelIndex &index) const
+{
+        if (   index.column()==PATIENT
+               || index.column()==PRATICIEN
+               || index.column()==SITE
+               || index.column()==PAYEUR
+               || index.column()==DATE_OPERATION
+               || index.column()==DATE_PAIEMENT
+               || index.column()==FacturationSpace::DATE_VALEUR
+               || index.column()==DATE_VALIDATION
+               || index.column()==PRESTATION
+               || index.column()==FacturationSpace::VALEUR
+               || index.column()==MODE_PAIEMENT
+               || index.column()==STATUT)
+        {
+            return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
+            } 
+        else 
+        {
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+            }
+}
